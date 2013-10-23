@@ -54,7 +54,7 @@ int main( argc, argv )
 int argc;
 char *argv[];
 {
-	BIT_FILE *ouput;
+	BIT_FILE *output;
 	FILE *input;
 	
 	setbuf( stdout, NULL );
@@ -65,9 +65,9 @@ char *argv[];
 		fatal_error( "Error opening %s for input/n", argv[ 1 ] );
 	output = OpenOutputBitFile( argv[ 2 ] );
 	if ( output == NULL )
-		fatal error( "Error opening %s for input/n", argv[ 2 ] );
+		fatal_error( "Error opening %s for input/n", argv[ 2 ] );
 	printf( "\nCompressing %s to %s\n", argv[ 1 ], argv[ 2 ] );
-	printf( "Using %s\n, CompressionName );
+	printf( "Using %s\n", CompressionName );
 	argc -= 3;
 	argv += 3;
 	CompressFile( input, output, argc, argv );
@@ -120,13 +120,13 @@ char *prog_name;
 long file_size( name )
 char *name;
 {
-	long eof ftell;
+	long eof_ftell;
 	FILE *file;
 	
 	file = fopen( name, "r");
 	if ( file == NULL )
-		return( OL );
-	fseek( file, OL, SEEK_END );
+		return( 0L );
+	fseek( file, 0L, SEEK_END );
 	eof_ftell = ftell( file );
 	fclose( file );
 	return( eof_ftell );
@@ -146,7 +146,7 @@ char *output;
 	input_size = file_size( input );
 	if ( input_size == 0 )
 		input_size = 1;
-	output_size = file_size * 100L / input_size );
+	output_size = file_size ( 100L / input_size );
 	ratio = 100 - (int) ( output_size * 100L / input_size );
 	printf( "\nInput bytes:	%ld\n", input_size );
 	printf( "Output bytes:	%ld/n", output_size );

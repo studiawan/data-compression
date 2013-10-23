@@ -7,7 +7,6 @@
 #ifdef __STDC__
 void fatal_error( char *fmt, ... )
 #else
-
 #ifdef __UNIX__
 void fatal_error( fmt )
 char *fmt;
@@ -18,7 +17,6 @@ void fatal_error( fmt )
 #endif
 {
 	va_list argptr;
-	
 	va_start( argptr, fmt );
 	printf( "Fatal error: " );
 	vprintf( fmt, argptr );

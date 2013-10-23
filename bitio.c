@@ -59,7 +59,7 @@ BIT_FILE *bit_file;
 int bit;
 {
 	if ( bit )
-		bit_file->rack | = bit_file->mask;
+		bit_file->rack |= bit_file->mask;
 	bit_file->mask >>= 1;
 	if ( bit_file->mask == 0 ) {
 		if ( putc( bit_file->rack, bit_file->file ) != bit_file->rack )
@@ -81,7 +81,7 @@ int count;
 	mask = 1L << ( count - 1 );
 	while ( mask != 0) {
 		if ( mask & code )
-			bit_file->rack | = bit_file->mask;
+			bit_file->rack |= bit_file->mask;
 		bit_file->mask >>= 1;
 		
 		if ( bit_file->mask == 0 ) {
@@ -147,7 +147,7 @@ unsigned int code;
 int bits;
 {
 	unsigned int mask;
-	mask = 1 << ( bits - 1 ):
+	mask = 1 << ( bits - 1 );
 	while ( mask != 0 ){
 		if ( code & mask )
 			fputc( '1', file );
