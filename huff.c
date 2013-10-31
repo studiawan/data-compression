@@ -338,7 +338,7 @@ NODE *nodes;
 	
 	for ( i = 0 ; i < 256 ; i++ ) {
 		nodes[ i ].count = (unsigned int) ( counts[ i ] / max_count );
-		if ( nodes[ i ].count == 0 && counts[ i ] !=0 );
+		if ( nodes[ i ].count == 0 && counts[ i ] !=0 )
 			nodes[ i ].count = 1;
 	}
 	nodes[ END_OF_STREAM ].count = 1;
@@ -375,7 +375,7 @@ NODE *nodes;
 		for ( i = 0 ; i < next_free; i++ )
 			if ( nodes[ i ].count != 0) {
 				if ( nodes[ i ].count < nodes[ min_1 ].count ) {
-					min_2 + min_1;
+					min_2 = min_1;
 					min_1 = i;
 				} 
 				else if ( nodes[ i ].count < nodes[ min_2 ].count)
@@ -432,7 +432,7 @@ int node;
 * diagnostic information. By the time I get here, and the tree has
 * been built, every active element will have 0 in its count.
 */
-void print_mode1( nodes, codes ) 
+void print_model( nodes, codes ) 
 NODE *nodes;
 CODE *codes;
 {	
@@ -512,7 +512,7 @@ int root_node;
 				node = nodes[ node ].child_1;
 			else
 				node = nodes[ node ].child_0;
-		} while ( node != END_OF_STREAM );
+		} while ( node > END_OF_STREAM );
 		
 		if ( node == END_OF_STREAM )
 			break;

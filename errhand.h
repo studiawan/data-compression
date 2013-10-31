@@ -3,13 +3,13 @@
 #ifndef _ERRHAND_H
 #define _ERRHAND_H
 
-#ifdef ___STDC___
+#ifdef __STDC__
 void fatal_error( char *fmt, ... );
 
-#else /* ___STDC___ */
+#else /* __STDC__ */
 void fatal_error();
 
-#endif /* ___STDC___ */
+#endif /* __STDC__ */
 #endif /* _ERRHAND_H */
 
 /********************** End of ERRHAND.H *************************/
