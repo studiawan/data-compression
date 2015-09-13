@@ -8,11 +8,12 @@
 void fatal_error( char *fmt, ... )
 #else
 #ifdef __UNIX__
-void fatal_error( fmt )
+void fatal_error( fmt, va_alist )
 char *fmt;
 va_dcl
 #else
 void fatal_error( fmt )
+char *fmt;
 #endif
 #endif
 {

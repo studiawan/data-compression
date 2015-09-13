@@ -37,7 +37,7 @@ main-c infile outfile [ options ]
 #include "bitio.h"
 #include "errhand.h"
 #include "main.h"
-#ifdef ___STDC___
+#ifdef __STDC__
 
 void usage_exit( char *prog_name );
 void print_ratios( char *input, char *output );
@@ -62,15 +62,13 @@ char *argv[];
 		usage_exit( argv[ 0 ] );
 	input = fopen(argv [ 1 ], "rb" );
 	if ( input == NULL )
-		fatal_error( "Error opening %s for input/n", argv[ 1 ] );
+		fatal_error( "Error opening %s for input\n", argv[ 1 ] );
 	output = OpenOutputBitFile( argv[ 2 ] );
 	if ( output == NULL )
-		fatal_error( "Error opening %s for input/n", argv[ 2 ] );
+		fatal_error( "Error opening %s for output\n", argv[ 2 ] );
 	printf( "\nCompressing %s to %s\n", argv[ 1 ], argv[ 2 ] );
 	printf( "Using %s\n", CompressionName );
-	argc -= 3;
-	argv += 3;
-	CompressFile( input, output, argc, argv );
+	CompressFile( input, output, argc - 3, argv + 3 );
 	CloseOutputBitFile( output );
 	fclose( input );
 	print_ratios( argv[ 1 ], argv[ 2 ] );
@@ -146,10 +144,10 @@ char *output;
 	input_size = file_size( input );
 	if ( input_size == 0 )
 		input_size = 1;
-	output_size = file_size ( 100L / input_size );
+	output_size = file_size ( output );
 	ratio = 100 - (int) ( output_size * 100L / input_size );
 	printf( "\nInput bytes:	%ld\n", input_size );
-	printf( "Output bytes:	%ld/n", output_size );
+	printf( "Output bytes:	%ld\n", output_size );
 	if ( output_size == 0 )
 		output_size = 1;
 	printf( "Compression ratio: %d%%\n", ratio );
