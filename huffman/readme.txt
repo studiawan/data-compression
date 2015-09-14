@@ -2,8 +2,8 @@
 This is readme for Huffman source code from Data Compression Book. 
 Issue these commands in your terminal to compile Huffman source code:
 
-cc -ohuff-c main-c.c huff.c ../lib/bitio.c ../lib/errhand.c
-cc -ohuff-e main-e.c huff.c ../lib/bitio.c ../lib/errhand.c
+cc -ohuff-c ../lib/main-c.c huff.c ../lib/bitio.c ../lib/errhand.c
+cc -ohuff-e ../lib/main-e.c huff.c ../lib/bitio.c ../lib/errhand.c
 
 To run the executable and test the compression with alice29.txt from Cantrbry dataset, simply type this line in the terminal:
 

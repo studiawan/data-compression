@@ -5,7 +5,7 @@
 #include <ctype.h>
 #include "../lib/bitio.h"
 #include "../lib/errhand.h"
-#include "main.h"
+#include "../lib/main.h"
 
 /*
 * The NODE structure is a node in the Huffman decoding tree. It has a
