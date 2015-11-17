@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include <math.h>
 #include <unistd.h>
@@ -30,7 +31,7 @@ void usage(void);
 
 void main(int argc, char **argv)
 {
-	unsigned char *file,*efile; 
+	unsigned char *file,*efile;
 		/*pointer to an array for file
 		  pointer to an array for encoded image*/
 	unsigned char w,p,n; /* place holders */
@@ -38,7 +39,7 @@ void main(int argc, char **argv)
 	char temp [80],where,size;
 	int num,s,x,c;
 	int i,k,l,count,f; /* counters */
-	FILE *ifp,*ofp,*cfp,*tmp_fp; 
+	FILE *ifp,*ofp,*cfp,*tmp_fp;
 	unsigned int *code,word,d;
 	char *length,t;  /* pointer to an array for code lengths */
 	extern int optint;
@@ -107,7 +108,7 @@ void main(int argc, char **argv)
 /* get file size */
 
    /* create a temporary file for input */
-	
+
 	if(t==0){
 		strcpy(infile,"tmpf");
 		tmp_fp=fopen(infile,"wb+");
@@ -117,7 +118,7 @@ void main(int argc, char **argv)
                 ifp=fopen(infile,"rb");
 		t=0;
 	}
-	
+
 	fseek(ifp,0,2); /* set file pointer at end of file */
 	s=ftell(ifp); /* gets size of file */
 	fseek(ifp,0,0); /* set file pointer to begining of file */
@@ -147,7 +148,7 @@ void main(int argc, char **argv)
 	count=0;
 	w=*(efile+count); /* w equals encoded word */
 	++count; /* counter to keep track of which word is being decoded */
-    for( ;count<s; ){ 
+    for( ;count<s; ){
         for(k=0;k<8;k++){
 		if((w & n) == n){ /* checks bit value of encoded word */
 			++word;
@@ -187,22 +188,19 @@ void main(int argc, char **argv)
 	fwrite(file,sizeof(unsigned char),l,ofp);
 	fclose(ofp);
 
-}		
+}
 
 void usage()
 {
   fprintf(stderr,"Usage:\n");
   fprintf(stderr,"huff_enc [-i infile][-o outfile][-c codefile][-h]\n");
   fprintf(stderr,"\t imagein : file containing the Huffman-encoded data.  If no\n");
-  fprintf(stderr,"\t\t name is provided input is read from standard in.\n"
-);
+  fprintf(stderr,"\t\t name is provided input is read from standard in.\n");
   fprintf(stderr,"\t outfile : File to contain the reconstructed representation.  If no\n");
-  fprintf(stderr,"\t\t name is provided the output is written to standard out.\n
-");
+  fprintf(stderr,"\t\t name is provided the output is written to standard out.\n");
   fprintf(stderr,"\t codefile: This option is required if the Huffman encoded file\n");
   fprintf(stderr,"\t\t does not contain the Huffman code as part of the header\n");
-  fprintf(stderr,"\t\t If this option is specified the program will read the\
-n");
+  fprintf(stderr,"\t\t If this option is specified the program will read the\n");
    fprintf(stderr,"\t\t Huffman code from codefile.\n");
 }
 
