@@ -1,3 +1,6 @@
+#ifndef IDC_H
+#define IDC_H
+
 float ent(float [], int );
 int image_size(char [], int *, int *);
 void readimage(char [], unsigned char **, int, int);
@@ -53,3 +56,4 @@ BTREE make_list (int num);
 void write_code(NODE *root, int lgth, unsigned int *code, char *length, int *loc);
 
 #define     myabs(x) ((x)<0? -(x): (x))
+#endif // IDC_H
