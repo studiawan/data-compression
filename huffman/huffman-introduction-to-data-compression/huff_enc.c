@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <string.h>
 #include "idc.h"
-
 /**********************************************************************
 *                                                                      *
 *  File: huff_enc.c                                                    *
@@ -129,7 +128,8 @@ void main(int argc, char **argv)
 
 	fseek(ifp,0,2); /* set file pointer at end of file */
 	size = ftell(ifp); /* gets size of file */
-	++size;
+	
+	//++size;	//defaultnya gini tapi hasilnya size kelebihan 1. pengaruh pas fungsi value. #karsten
 	fseek(ifp,0,0); /* set file pointer to begining of file */
 
     /* get memory for file */
@@ -156,14 +156,16 @@ void main(int argc, char **argv)
         /* set values to zero */
         for(i = 0; i < num; i++)
         {
-            values[i] = 1;
+        	
+        	//values[i] = 1; defaultnya gini aneh. #karsten
+            values[i] = 0;
         }
 
         //	fprintf(stderr,"Before values\n");
 
         /* find values */
         value(values,file,size,num);
-
+        
         //	fprintf(stderr,"After value\n");
 
         /* find probs */
