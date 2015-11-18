@@ -1,5 +1,6 @@
 #ifndef IDC_H
 #define IDC_H
+#include<stdio.h>
 
 float ent(float [], int );
 int image_size(char [], int *, int *);
@@ -48,7 +49,7 @@ struct node
 /* define subroutines and pointers to nodes */
 
 typedef struct node NODE;
-typedef struct NODE *BTREE;
+typedef struct node *BTREE;
 BTREE create_list(float prob[], int loc[], int num);
 void create_code(NODE *root, int lgth, unsigned int *code, char *length);
 
