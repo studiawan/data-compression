@@ -183,6 +183,7 @@ void main(int argc, char **argv)
         }
 
         /* sort prob array */
+        // loc adalah array yang berisi huruf yang disort descending berdasarkan array prob
         sort(prob,loc,num);
 
         //	fprintf(stderr,"After sort   \n");
