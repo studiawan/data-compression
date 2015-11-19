@@ -35,15 +35,15 @@ int files(int size,int *code,char *length,unsigned char *file);
 /* define the structure node */
 struct node
 {
-        float pro; /* probabilities */
-        int l; /* location of probability before sorted */
-        unsigned int code; /* code */
-        struct node *left; /* pointer for binary tree */
-        struct node *right; /* pointer for binary tree */
-        struct node *forward;
-        struct node *back;
-        struct node *parent; /* pointer to parent */
-        int check;
+    float pro; /* probabilities */
+    int l; /* location of probability before sorted */
+    unsigned int code; /* code */
+    struct node *left; /* pointer for binary tree */
+    struct node *right; /* pointer for binary tree */
+    struct node *forward;
+    struct node *back;
+    struct node *parent; /* pointer to parent */
+    int check;
 };
 
 /* define subroutines and pointers to nodes */
