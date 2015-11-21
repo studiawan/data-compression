@@ -99,7 +99,7 @@ void uq_dec(std::queue<char> *code_read, unsigned char *buffer_out, int bit_len,
 			(*code_read).pop();
 		}
 		
-		buffer_out[iter++] = (unsigned char)((int)temp * mid);
+		buffer_out[iter++] = (unsigned char)(((int)temp + 1) * mid);
 	}
 	
 	return;
@@ -108,8 +108,7 @@ void uq_dec(std::queue<char> *code_read, unsigned char *buffer_out, int bit_len,
 int main(int argc, char* argv[]) {
 	/** argv = {
 	 *      0 := this program (.exe)
-	 *      1 := filname in (.pgm)
-	 *      2 := bit
+	 *      1 := filname in (.uq)
 	 *  }
 	 */
 	
@@ -143,7 +142,7 @@ int main(int argc, char* argv[]) {
 		
 		char temp_out[128];
 		
-		out << "P5\n# Create By AHIwCV\n";
+		out << "P5\n# Create By UQ\n";
 		sprintf(temp_out, "%d %d\n", width, height);
 		out << temp_out;
 		out << "255\n";

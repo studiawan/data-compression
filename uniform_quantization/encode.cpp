@@ -57,7 +57,7 @@ void uq_enc(unsigned char *buffer_in, std::queue<char> *code_write, int size, in
 	int mid = range/2;
 	
 	for (int iter=0; iter<size; ++iter) {
-		unsigned char temp = (unsigned char)(((int)buffer_in[iter] / range) + 1);
+		unsigned char temp = (unsigned char)((int)buffer_in[iter] / range);
 		
 		temp <<= (8-bit_len);
 		for (int j=0; j<bit_len; j++) {
