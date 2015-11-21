@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
 		
 		return 1;
 		
-    } else {
+	} else {
 //		std::cout << argv[1] << '\n' << argv[2] << '\n';
 		
 		std::ifstream in;
