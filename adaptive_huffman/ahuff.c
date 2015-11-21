@@ -111,14 +111,13 @@ void CompressFile(FILE *input,BIT_FILE *output,int argc,char *argv[])
 void ExpandFile(BIT_FILE *input,FILE *output,int argc,char *argv[])
 {
     int c;
-    while ( argc > 0 )
+    while ( argc-- > 0 )
     {
         printf( "Unused argument: %s\n", *argv++ );
-        argc --;
     }
 
     InitializeTree( &Tree );
-    while ( ( c = DecodeSymbol( &Tree, input ) ) != EOF) {
+    while ( ( c = DecodeSymbol( &Tree, input ) ) != END_OF_STREAM) {
         if ( putc( c, output ) == EOF )
             fatal_error( "Error writing character" );
         UpdateModel( & Tree, c );
