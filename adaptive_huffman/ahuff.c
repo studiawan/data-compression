@@ -111,14 +111,13 @@ void CompressFile(FILE *input,BIT_FILE *output,int argc,char *argv[])
 void ExpandFile(BIT_FILE *input,FILE *output,int argc,char *argv[])
 {
     int c;
-    while ( argc > 0 )
+    while ( argc-- > 0 )
     {
         printf( "Unused argument: %s\n", *argv++ );
-        argc --;
     }
 
     InitializeTree( &Tree );
-    while ( ( c = DecodeSymbol( &Tree, input ) ) != EOF) {
+    while ( ( c = DecodeSymbol( &Tree, input ) ) != END_OF_STREAM) {
         if ( putc( c, output ) == EOF )
             fatal_error( "Error writing character" );
         UpdateModel( & Tree, c );
@@ -171,9 +170,12 @@ void InitializeTree(TREE *tree)
 * to an arbitrary limit of 0x8000. It could be set as high as 65535
 * if desired.
 */
+static int count_x = 1;
 void EncodeSymbol(TREE *tree,unsigned int c, BIT_FILE *output)
 {
     unsigned long code;
+    printf("Bit ke-%d\n",count_x);
+    count_x++;
     unsigned long current_bit;
     int code_size;
     int current_node;
@@ -185,11 +187,14 @@ void EncodeSymbol(TREE *tree,unsigned int c, BIT_FILE *output)
         current_node = tree->leaf[ ESCAPE ];
     while ( current_node != ROOT_NODE ) {
         if ( ( current_node & 1 ) == 0 )
-            code = current_bit;
-            //code | = current_bit;
+        {
+            code |= current_bit;
+        }
         current_bit <<= 1;
         code_size++;
+        printf("before %d",current_node);
         current_node = tree->nodes[ current_node ].parent;
+        printf("after %d",current_node);
     }
     OutputBits( output, code, code_size );
     if ( tree->leaf[ c ] == -1 ) {
@@ -238,6 +243,7 @@ void UpdateModel(TREE *tree, int c)
     if ( tree->nodes[ ROOT_NODE].weight == MAX_WEIGHT )
         RebuildTree( tree );
     current_node = tree->leaf[ c ];
+    printf(">>%d\n",current_node);
     while ( current_node != -1 ) {
         tree->nodes[ current_node ].weight++;
         for ( new_node = current_node ; new_node > ROOT_NODE ;new_node-- )
@@ -247,9 +253,11 @@ void UpdateModel(TREE *tree, int c)
         }
         if ( current_node != new_node )
         {
+            printf("Its swap\n");
             swap_nodes( tree, current_node, new_node );
             current_node = new_node;
         }
+        printf("bbb\n");
         current_node = tree->nodes[ current_node ].parent;
     }
 }
@@ -328,20 +336,27 @@ void swap_nodes(TREE *tree,int i,int j)
     if ( tree->nodes [ i ].child_is_leaf )
         tree->leaf[ tree->nodes[ i ].child ] = j;
     else {
+        printf("%d\n",tree->nodes[ i ].child );
         tree->nodes[ tree->nodes[ i ].child ].parent = j;
-        tree->nodes[ tree->nodes[ i ].child + 1 ].parent = j;
+        //tree->nodes[ tree->nodes[ i ].child + 1 ].parent = j;
     }
     if ( tree->nodes[ j ].child_is_leaf )
         tree->leaf[ tree->nodes[ j ].child ] = i;
     else {
         tree->nodes[ tree->nodes[ j ].child ].parent = i;
-        tree->nodes[ tree->nodes[ j ].child + 1 ].parent = i;
+        //tree->nodes[ tree->nodes[ j ].child + 1 ].parent = i;
     }
     temp = tree->nodes[ i ];
     tree->nodes[ i ] = tree->nodes[ j ];
     tree->nodes[ i ].parent = temp.parent;
     temp.parent = tree->nodes[ j ].parent;
     tree->nodes[ j ] = temp;
+    /*
+    temp = tree->nodes[ i ];
+    tree->nodes[ i ] = tree->nodes[ j ];
+    tree->nodes[ i ].parent = tree->nodes[j].parent;
+    tree->nodes[ j ] = temp;
+    tree->nodes[ j ].parent = temp.parent;*/
 }
 /*
 * Adding a new node to the tree is pretty simple. It is just a matter
