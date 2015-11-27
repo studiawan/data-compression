@@ -79,13 +79,13 @@ unsigned long code;
 int count;
 {
 	unsigned long mask;
-
+	
 	mask = 1L << ( count - 1 );
 	while ( mask != 0) {
 		if ( mask & code )
 			bit_file->rack |= bit_file->mask;
 		bit_file->mask >>= 1;
-
+		
 		if ( bit_file->mask == 0 ) {
 			if ( putc( bit_file->rack, bit_file->file ) != bit_file->rack )
 				fatal_error( "Fatal error in OutputBit!\n" );
@@ -101,7 +101,7 @@ int InputBit( bit_file )
 BIT_FILE *bit_file;
 {
 	int value;
-
+	
 	if ( bit_file->mask == 0x80 ) {
 		bit_file->rack = getc( bit_file->file );
 		if ( bit_file->rack == EOF )
@@ -122,7 +122,7 @@ int bit_count;
 {
 	unsigned long mask;
 	unsigned long return_value;
-
+	
 	mask = 1L << ( bit_count - 1 );
 	return_value = 0;
 	while ( mask != 0) {
@@ -133,7 +133,7 @@ int bit_count;
 			if ( ( bit_file->pacifier_counter++ & PACIFIER_COUNT ) == 0 )
 				putc( '.', stdout );
 		}
-
+		
 		if ( bit_file->rack & bit_file->mask )
 			return_value |=mask;
 		mask >>= 1;
@@ -159,3 +159,4 @@ int bits;
 	}
 }
 /********************** End of BITIO.C **********************/
+
