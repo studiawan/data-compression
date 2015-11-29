@@ -171,13 +171,13 @@ void initialize_options( argc, argv )
 int argc;
 char *argv[];
 {
- while ( argc–– > 0 ) {
+ while ( argcï¿½ï¿½ > 0 ) {
 		 if ( strcmp( *argv, "-o" ) == 0 ) {
-		 argc––;
+		 argcï¿½ï¿½;
 		 max_order = atoi( *++argv );
 		 } else
 		 printf( "Uknown argument on command line: %s\n", *argv );
-		 argc––;
+		 argcï¿½ï¿½;
 		 argv++;
 	}
 }
@@ -375,7 +375,7 @@ void initialize_model()
  control_table->max_index = 1;
  control_table->stats[ 0 ].symbol = -FLUSH; 
  control_table->stats[ 0 ].counts = 1;
- control_table->stats[ 1 ].symbol =– DONE;
+ control_table->stats[ 1 ].symbol =ï¿½ DONE;
  control_table->stats[ 1 ].counts = 1;
  for ( i = 0 ; i < 256 ; i++ )
  scoreboard[ i ] = 0;
@@ -576,7 +576,7 @@ SYMBOL *s;
  table = contexts[ current_order ];
  totalize_table( table );
  s->scale = totals[ 0 ];
- if ( current_order == –2 )
+ if ( current_order == ï¿½2 )
  c = -c;
  for ( i = 0 ; i <= table->max_index ; i++ ) {
  if ( c == (int) table->stats[ i ].symbol ) {
@@ -589,7 +589,7 @@ SYMBOL *s;
  }
  s->low_count = totals[ 1 ];
  s->high-count = totals[ 0 ];
- current_order––;
+ current_orderï¿½ï¿½;
  return( 1 );
 }
 /*
@@ -634,7 +634,7 @@ SYMBOL *s;
  s->high_count = totals[ c - 1 ];
  s->low_count = totals[ c ]:
  if ( c == 1 ) {
- current_order––;
+ current_orderï¿½ï¿½;
  return( ESCAPE );
  }
  if ( current_order < -1 )
@@ -664,7 +664,7 @@ int c;
  return;
  contexts[ max_order ] =
  shift_to_next_context( contexts[ max_order ], c, max_order );
- for ( i = max_order-1 ; i > 0 ; i–– )
+ for ( i = max_order-1 ; i > 0 ; iï¿½ï¿½ )
  contexts[ i ] = contexts[ i+1 ]->lesser_context;
 }
 /*
@@ -759,7 +759,7 @@ CONTEXT *table;
  table->links == NULL ) {
  while ( table->stats[ table->max_index ].counts == 0 &&
  table->max_index >= 0 )
- table->max_index––;
+ table->max_indexï¿½ï¿½;
  if ( table->max_index == -1 ) {
  free( (char *) table->stats );
  table->stats = NULL;
