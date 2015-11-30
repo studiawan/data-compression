@@ -27,7 +27,7 @@
 void usage(void);
 
 
-int main(int argc, char **argv)
+void main(int argc, char **argv)
 {
     int row, col, row_size, col_size, temp, mode,pred;
     char outimage[50], resimage[50];
