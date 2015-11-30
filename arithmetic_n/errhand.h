@@ -1,18 +1,16 @@
-/************************* Start of ERRHAND.H ************************/
+/********************** Start of ERRHAND.H **********************/
 
 #ifndef _ERRHAND_H
 #define _ERRHAND_H
 
 #ifdef __STDC__
-
 void fatal_error( char *fmt, ... );
 
-#else   /* __STDC__ */
-
+#else /* __STDC__ */
 void fatal_error();
 
-#endif  /* __STDC__ */
+#endif /* __STDC__ */
+#endif /* _ERRHAND_H */
 
-#endif  /* _ERRHAND_H */
+/********************** End of ERRHAND.H *************************/
 
-/************************** End of ERRHAND.H *************************/
