@@ -14,5 +14,6 @@ main-c <nama file yang akan dikompresi> <nama file hasil kompresi>
 DEKOMPRESI
 main-e <nama file yang akan di dekompresi> <nama file hasil dekompresi>
 
-main-c pride_and_prejudice.txt compressed_pride_and_prejudice
-main-e compressed_pride_and_prejudice decompressed_pride_and_prejudice.txt
+Contoh : 
+main-c original_files/berk.raw compressed_files/berk.raw.arith_n
+main-e compressed_files/berk.raw.arith_n original_files/berk.raw
