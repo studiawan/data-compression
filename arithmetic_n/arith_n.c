@@ -341,7 +341,7 @@ void initialize_model()
  for ( i = 0 ; i <= max_order ; i++ )
  contexts[ i ] = allocate_next_order_table( contexts[ i-1 ], 0,contexts[ i-1 ] );
  free( (char *) null_table->stats );
- null_table->stats =(STATS &) calloc( sizeof( STATS ), 256 );
+ null_table->stats =(STATS *) calloc( sizeof( STATS ), 256 );
  if ( null_table->stats == NULL )
  	fatal_error( "Failure #3: allocating null table!" );
  null_table->max_index = 255;
@@ -352,8 +352,7 @@ void initialize_model()
  control_table = (CONTEXT *) calloc( sizeof(CONTEXT), 1 );
  if ( control_table == NULL )
  	fatal_error( "Failure #4: allocating null table!" );
- control_table->stats =
- (STATS *) calloc( sizeof( STATS ), 2 );
+ control_table->stats =  (STATS *) calloc( sizeof( STATS ), 2 );
  if ( control_table->stats == NULL )
  	fatal_error( "Failure #5: allocating null table!" );
  contexts[ -2 ] = control_table;
@@ -488,7 +487,7 @@ void update_table(CONTEXT *table,int symbol)
 	 new_size *= table->max_index + 1;
 	 if ( current_order < max_order ) {
 		 if ( table->max_index == 0 )
-		 	table->links - (LINKS *) calloc( new_size, 1 );
+		 	table->links = (LINKS *) calloc( new_size, 1 );
 		 else
 		 	table->links = (LINKS *)
 		 realloc( (char *) table->links, new_size );
@@ -601,11 +600,11 @@ void get_symbol_scale(SYMBOL *s)
 */
 int convert_symbol_to_int(int count,SYMBOL *s)
 {
+	printf("halo\n");
  int c;
  CONTEXT *table;
- table - contexts[ current_order ];
- for ( c = 0; count < totals[ c ] ; c++ )
- ;
+ table = contexts[ current_order ];
+ for ( c = 0; count < totals[ c ] ; c++ );
  s->high_count = totals[ c - 1 ];
  s->low_count = totals[ c ];
  if ( c == 1 ) {
@@ -757,9 +756,9 @@ void totalize_table(CONTEXT *table)
  unsigned char max;
  for ( ; ; ) {
 	 max = 0;
-	 //i = table->max_index + 2;
+	 i = table->max_index + 2;
 	 totals[ i ] = 0;
-	 for (i = table->max_index + 2 ; i > 1 ; i-- ) {
+	 for ( ; i > 1 ; i-- ) {
 	 totals[ i-1 ] = totals[ i ];
 	 if ( table->stats[ i-2 ].counts )
 		 if ( ( current_order == -2 ) || scoreboard[ table->stats[ i-2 ].symbol ] == 0 )

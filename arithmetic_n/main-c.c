@@ -42,17 +42,17 @@ long file_size();
 #endif
 int main(int argc,char *argv[])
 {
- BIT_FILE *ouput;
+ BIT_FILE *output;
  FILE *input;
  setbuf( stdout, NULL );
  if ( argc < 3 )
  	usage_exit( argv[ 0 ] );
  input = fopen(argv [ 1 ], "rb" );
  if ( input == NULL )
- 	fatal_error( "Error opening %s for input/n", argv[ 1 ] );
+ 	fatal_error( "Error opening %s for input\n", argv[ 1 ] );
  output = OpenOutputBitFile( argv[ 2 ] );
  if ( output == NULL )
- 	fatal_error( "Error opening %s for input/n", argv[ 2 ] );
+ 	fatal_error( "Error opening %s for output\n", argv[ 2 ] );
  printf( "\nCompressing %s to %s\n", argv[ 1 ], argv[ 2 ] );
  printf( "Using %s\n", CompressionName );
  argc -= 3;
@@ -102,12 +102,15 @@ void usage_exit(char *prog_name)
 #endif
 long file_size(char *name)
 {
- long eof ftell;
- FILE *file;
- file = fopen( name, "r");
- if ( file == NULL )
- 	return( OL );
- fseek( file, OL, SEEK_END );
+	printf("Test1\n");
+ 	long eof_ftell;
+ 	FILE *file;
+ 	printf("Test2 : %c\n",name);
+ 	file = fopen( name, "r");
+ 	printf("Test3 : %c\n",name);
+ 	if ( file == NULL )
+ 	return( 0L );
+ fseek( file,0L, SEEK_END );
  eof_ftell = ftell( file );
  fclose( file );
  return( eof_ftell );
@@ -121,14 +124,16 @@ void print_ratios(char *input,char *output)
  long input_size;
  long output_size;
  int ratio;
+ printf("input name : %c\n",input);
  input_size = file_size( input );
  if ( input_size == 0 )
  	input_size = 1;
- output_size = (file_size( input ) * 100 / input_size );
- ratio = 100 - (int) ( output_size * 100 / input_size ); 
+ output_size = (file_size( input ) * 100L / input_size );
+ ratio = 100 - (int) ( output_size * 100L / input_size ); 
  printf( "\nInput bytes: %ld\n", input_size );
- printf( "Output bytes: %ld/n", output_size );
+ printf( "Output bytes: %ld\n", output_size );
  if ( output_size == 0 )
  	output_size = 1;
  printf( "Compression ratio: %d%%\n", ratio );
+} 
 /*********************** End of MAIN-C.C *************************/
