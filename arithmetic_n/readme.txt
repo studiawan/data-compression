@@ -15,5 +15,5 @@ DEKOMPRESI
 main-e <nama file yang akan di dekompresi> <nama file hasil dekompresi>
 
 Contoh : 
-main-c original_files/berk.raw compressed_files/berk.raw.arith_n
+main-c original_files/sena.img compressed_files/sena.img.arith_n
 main-e compressed_files/berk.raw.arith_n original_files/berk.raw
