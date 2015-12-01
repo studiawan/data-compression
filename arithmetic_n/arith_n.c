@@ -167,20 +167,19 @@ char *argv[];
 * This routine checks for command line options. At present, the only
 * option being passed on the command line is the order.
 */
-void initialize_options( argc, argv )
-int argc;
-char *argv[];
+void initialize_options(int argc,char *argv[])
 {
- while ( argc–– > 0 ) {
-		 if ( strcmp( *argv, "-o" ) == 0 ) {
-		 argc––;
-		 max_order = atoi( *++argv );
-		 } else
-		 printf( "Uknown argument on command line: %s\n", *argv );
-		 argc––;
-		 argv++;
+ while ( argc-- > 0 ) {
+ 		if ( strcmp( *argv, "-o" ) == 0 ) {
+ 			argc--;
+ 			max_order = atoi( *++argv );
+ 		} 
+		else
+ 		printf( "Uknown argument on command line: %s\n", *argv );
+ 			argc--;
+ 			argv++;
+ 		}
 	}
-}
 /*
 * This routine is called once every 256 input symbols. Its job is to
 * check to see if the compression ratio falls below 10%. If the
@@ -342,15 +341,19 @@ void initialize_model()
  CONTEXT *control_table;
  current_order = max_order;
  contexts = (CONTEXT **) calloc( sizeof( CONTEXT * ), 10 );
- if ( contexts == NULL )
- fatal_error( "Failure #1: allocating context table!" );
- context += 2;
- null_table = (CONTEXT *) calloc( sizeof( CONTEXT ), 1 );
- if ( null_table == NULL )
- fatal_error( "Failure #2: allocating null table!" );
+ if ( contexts == NULL ) {
+ 	fatal_error( "Failure #1: allocating context table!" );
+ 	}
+contexts += 2;
+null_table = (CONTEXT *) calloc( sizeof( CONTEXT ), 1 );
+
+if ( null_table == NULL ){
+
+	 fatal_error( "Failure #2: allocating null table!" );
+	}
  null_table->max_index = -1;
  contexts[ -1 ] = null_table;
- for ( i = 0 ; i <= max_order ; 1++ )
+ for ( i = 0 ; i <= max_order ; i++ )
  contexts[ i ] = allocate_next_order_table( contexts[ i-1 ],
  0,
  contexts[ i-1 ] );
