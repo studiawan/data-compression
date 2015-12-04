@@ -1,0 +1,10 @@
+How To Compile and Run
+
+[silence.c]
+1. gcc [bitio.c] [errhand.c] [main-c.c] [silence.c] -o [executable-file-name]
+2. ./[executable-file-name] [input-file-name] [output-file-name]
+
+[compand.c]
+1. gcc [bitio.c] [errhand.c] [main-c.c] [compand.c] -lm -o [executable-file-name]
+2. ./[executable-file-name] [input-file-name] [output-file-name]
+
