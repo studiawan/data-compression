@@ -162,14 +162,14 @@ unsigned long Ccitt32Table[ 256 ]; /* This array holds the CRC */
 * complete, all that is left to do is optionally delete the input file,
 * then rename the output file to have the correct CAR file name.
 */
-int main( argc, argv )
-int argc;
-char *argv[];
+int main( int argc, char *argv[] )
+//int argc;
+//char *argv[];
 {
  int command;
  int count;
  setbuf( stdout, NULL );
- setbuf( stderr, NULL ):
+ setbuf( stderr, NULL );
  fprintf( stderr, "CARMAN 1.0 : " );
  BuildCRCTable();
  command = ParseArguments( argc, argv );
@@ -199,8 +199,7 @@ char *argv[];
  if ( command != 'P' )
  printf( "\n%d file%s\n", count, ( count == 1 ) ? "" : "s" );
  else
- fprintf( stderr, "\n%d file%s\n", count,
- ( count == 1 ) ? '' : "s" );
+ fprintf( stderr, "\n%d file%s\n", count, ( count == 1 ) ? "" : "s" );
  return( 0 );
 }
 /*
@@ -269,10 +268,10 @@ void BuildCRCTable()
 * This routine takes an input value as a seed, so that a running
 * calculation of the CRC can be used as blocks are read and written.
 */
-unsigned long CalculateBlockCRC32( count, crc, buffer )
-unsigned int count;
-unsigned long crc;
-void *buffer;
+unsigned long CalculateBlockCRC32( unsigned int count, unsigned long crc, void *buffer )
+//unsigned int count;
+//unsigned long crc;
+//void *buffer;
 {
  unsigned char *p = (unsigned char *) buffer;
  unsigned long temp1;
@@ -292,9 +291,9 @@ void *buffer;
 * perform on the fly calculations. In situations where performance is
 * critical, this routine could easily be recorded as a macro.
 */
-unsigned long UpdateCharacterCRC32( crc, c )
-unsigned long crc;
-int c;
+unsigned long UpdateCharacterCRC32( unsigned long crc, int c )
+//unsigned long crc;
+//int c;
 {
  unsigned long temp1;
  unsigned long temp2;
@@ -317,9 +316,9 @@ int c;
 * each of those arguments is encountered. Finally, the command itself
 * is returned to main(), for use later in processing the command.
 */
-int ParseArguments( argc, argv )
-int argc;
-char *argv[];
+int ParseArguments( int argc, char *argv[] )
+//int argc;
+//char *argv[];
 {
  int command;
  if ( argc < 3 || strlen( argv[ 1 ] ) > 1 )
@@ -348,7 +347,7 @@ char *argv[];
  case 'D' :
  if ( argc <= 3 )
  UsageExit();
- fprintf( stderr, "Deleting files from archive\n" )'
+ fprintf( stderr, "Deleting files from archive\n" );
  break;
  default :
  UsageExit();
@@ -365,8 +364,7 @@ void UsageExit()
  fputs( "CARMAN - Compressed ARchive MANager\n", stderr );
  fputs( "Usage: carman command car-file [file ...]\n", stderr );
  fputs( "Commands:\n", stderr );
- fputs( " a: Add files to a CAR archive (replace if present)\n",
- stderr );
+ fputs( " a: Add files to a CAR archive (replace if present)\n", stderr );
  fputs( " x: Extract files from a CAR archive\n", stderr );
  fputs( " r: Replace files in a CAR archive\n", stderr );
  fputs( " d: Delete files from a CAR archive\n", stderr );
@@ -398,9 +396,9 @@ void UsageExit()
 * right before the routine exits.
 *
 */
-void OpenArchiveFiles( name, command )
-char *name;
-int command;
+void OpenArchiveFiles( char *name, int command )
+//char *name;
+//int command;
 {
  char *s;
  int i;
@@ -472,10 +470,10 @@ int command;
 * this special processing is done under UNIX, where case is significant,
 * and wild cards are expanded by the shell.
 */
-void BuildFileList( argc, argv, command )
-int argc;
-char *argv[];
-int command;
+void BuildFileList( int argc, char *argv[], int command )
+//int argc;
+//char *argv[];
+//int command;
 {
  int i;
  int count;
@@ -490,7 +488,7 @@ int command;
  else
  MassageMSDOSFileName( count++, argv[ i ] );
 #endif
-#ifndef__MSDOS__
+#ifdef MSDOS
  FileList [ count ] = malloc( strlen( argv[ i ] ) + 2 );
  if ( FileList[ count ] == NULL )
  FatalError( "Ran out of memory storing file names" );
@@ -516,9 +514,9 @@ int command;
 #ifdef MSDOS
 #include <dos.h>
 #include <dir.h>
-int ExpandAndMassageMSDOSFileNames( count, wild_name )
-int count;
-char *wild_name;
+int ExpandAndMassageMSDOSFileNames( int count, char *wild_name )
+//int count;
+//char *wild_name;
 {
  int done;
  DIR_STRUCT file_info_block;
@@ -563,9 +561,9 @@ char *wild_name;
 * file without the terminal period. We fix this by always forcing the
 * file name to end in a period.
 */
-void MassageMSDOSFileName( count, file )
-int count;
-char *file;
+void MassageMSDOSFileName( int count, char *file )
+//int count;
+//char *file;
 {
  int i;
  char *p;
@@ -652,9 +650,9 @@ int AddFileListToArchive()
 * mean expanding the file, copying it to standard output,
 * adding it to the output CAR, or skipping over it completely.
 */
-int ProcessAllFilesInInputCar( command, count )
-int command;
-int count;
+int ProcessAllFilesInInputCar( int command, int count )
+//int command;
+//int count;
 {
  int matched;
  FILE *input_text_file;
@@ -747,8 +745,8 @@ int count;
 * wild cards to specify file names inside the CAR file, we need a
 * special comparison routine.
 */
-int SearchFileList( file_name )
-char *file_name;
+int SearchFileList( char *file_name )
+//char *file_name;
 {
  int i;
  for ( i = 0 ; FileList[ i ] != NULL ; i++ ) {
@@ -763,9 +761,9 @@ char *file_name;
 * represents a string of any length, including 0, and '?' represents any
 * single character.
 */
-int WildCardMatch( string, wild_string )
-char *string;
-char *wild_string;
+int WildCardMatch( char *string, char *wild_string )
+//char *string;
+//char *wild_string;
 {
  for ( ; ; ) {
  if ( *wild_string == '*' ) {
@@ -859,17 +857,8 @@ void PrintListTitles()
 */
 void ListCarFileEntry()
 {
- static char *methods[] = {
- "Stored",
- "LZSS"
- };
-printf( "%-20s %10lu %10lu %4d%% %081x %s\n",
- Header.file_name,
- Header.original_size,
- Header.compressed_size,
- RatioInPercent( Header.compressed_size,
- Header.original_size ), Header.original_crc,
- methods[ Header.compression_method - 1 ] );
+ static char *methods[] = { "Stored", "LZSS" };
+printf( "%-20s %10lu %10lu %4d%% %081x %s\n", Header.file_name, Header.original_size, Header.compressed_size, RatioInPercent( Header.compressed_size, Header.original_size ), Header.original_crc, methods[ Header.compression_method - 1 ] );
 }
 /*
 * The compression figure used in this book is calculated here. The value
@@ -877,9 +866,9 @@ printf( "%-20s %10lu %10lu %4d%% %081x %s\n",
 * ratio of 0%, while one that has been shrunk down to nothing would have
 * a ratio of 100%.
 */
-int RatioInPercent( compressed, original )
-unsigned long compressed;
-unsigned long original;
+int RatioInPercent( unsigned long compressed, unsigned long original )
+//unsigned long compressed;
+//unsigned long original;
 {
  int result;
  if ( original == 0 )
@@ -927,8 +916,7 @@ if ( i == 0 )
  return( 0 );
 header_crc = CalculateBlockCRC32( i + 1, CRC_MASK, Header.file_name );
 fread( header_data, 1, 17, InputCarFile );
-Header.compression_method = (char)
- UnpackUnsignedData( 1, header_data + 0 );
+Header.compression_method = (char) UnpackUnsignedData( 1, header_data + 0 );
 Header.original_size = UnpackUnsignedData( 4, header_data + 1 );
 Header.compressed_size = UnpackUnsignedData( 4, header_data + 5 );
 Header.original_crc = UnpackUnsignedData( 4, header_data + 9 );
@@ -944,9 +932,9 @@ return( 1 );
 * integers. Its only purpose is to convert packed character data
 * into integers and longs.
 */
-unsigned long UnpackUnsignedData( number_of_bytes, buffer )
-int number_of_bytes;
-unsigned char *buffer;
+unsigned long UnpackUnsignedData( int number_of_bytes, unsigned char *buffer )
+//int number_of_bytes;
+//unsigned char *buffer;
 {
  unsigned long result;
  int shift_count;
@@ -973,15 +961,12 @@ void WriteFileHeader()
  if ( Header.file_name[ i++ ] == '\0' )
  break;
 }
-Header.header_crc = CalculateBlockCRC32( i, CRC_MASK,
- Header.file_name );
-PackUnsignedData( 1, (long)
- Header.compression_method,header_data + 0 );
+Header.header_crc = CalculateBlockCRC32( i, CRC_MASK, Header.file_name );
+PackUnsignedData( 1, (long)Header.compression_method,header_data + 0 );
 PackUnsignedData( 4, Header.original_size, header_data + 1 );
 PackUnsignedData( 4, Header.compressed_size, header_data + 5 );
 PackUnsignedData( 4, Header.original_crc, header_data + 9 );
-Header.header_crc = CalculatedBlockCRC32( 13, Header.header_crc,
- header_data );
+Header.header_crc = CalculatedBlockCRC32( 13, Header.header_crc, header_data );
 Header.header_crc ^= CRC_MASK;
  PackUnsignedData( 4, Header.header_crc, header_data + 13 );
  fwrite( header_data, 1, 17, OutputCarFile );
@@ -992,10 +977,10 @@ Header.header_crc ^= CRC_MASK;
 * CAR file. The data is always written out with the least significant
 * bytes of the integers or long integers going first.
 */
-void PackUnsignedData( number_of_bytes, number, buffer )
-int number_of_bytes;
-unsigned long number;
-unsigned char *buffer;
+void PackUnsignedData( int number_of_bytes, unsigned long number, unsigned char buffer )
+//int number_of_bytes;
+//unsigned long number;
+//unsigned char *buffer;
 {
  while ( number_of_bytes-- > 0 ) {
  *buffer++ = ( unsigned char ) number & Oxff;
@@ -1035,9 +1020,9 @@ void WriteEndOfCarHeader()
 * this, the starting position of the file in the output CAR file is also
 * stored when the routine starts up.
 */
-void Insert( input_text_file, operation )
-FILE *input_text_file;
-char *operation;
+void Insert( FILE *input_text_file, char operation )
+//FILE *input_text_file;
+//char *operation;
 {
  long saved_position_of_header;
  long saved_position_of_file;
@@ -1059,8 +1044,7 @@ char *operation;
  fseek( OutputCarFile, saved_position_of_header, SEEK_SET );
  WriteFileHeader();
  fseek( OutputCarFile, OL, SEEK_END );
- printf( "%d%%\n", RatioInPercent( Header.compressed_size,
- Header.original_size ) );
+ printf( "%d%%\n", RatioInPercent( Header.compressed_size, Header.original_size ) );
 }
 /*
 * The Extract routine can be called for one of three reasons. If the
@@ -1072,8 +1056,8 @@ char *operation;
 * the null device. Finally, the 'Print' option may have been selected,
 * in which case the destination file will be extracted to stdout.
 */
-void Extract( destination )
-FILE *destination;
+void Extract( FILE *destination )
+//FILE *destination;
 {
  FILE *output_text_file;
  unsigned long crc;
@@ -1098,14 +1082,13 @@ switch( Header.compression_method ) {
  crc = LZSSExpand( output_text_file );
  break;
  default :
- fprintf( stderr, "Unknown method: %c\n",
- Header.compression_method );
+ fprintf( stderr, "Unknown method: %c\n", Header.compression_method );
  SkipOverFileFromInputCar();
  error = 1;
  crc = Header.original_crc;
  break;
  }
- if ( crc != Header.original_crc ) {
+ if ( crc != Header.original_crc ) { 
  fprintf( stderr, "CRC error reading data\n" );
  error = 1;
  }
@@ -1143,8 +1126,8 @@ switch( Header.compression_method ) {
 * Unstore(), since they do no compression or expansion.
 *
 */
-int Store( input_text_file )
-FILE *input_text_file;
+int Store( FILE *input_text_file )
+//FILE *input_text_file;
 {
  unsigned int n;
  char buffer[ 256 ];
@@ -1153,8 +1136,7 @@ FILE *input_text_file;
  Header.original_crc = CRC_MASK;
  while ( ( n = fread( buffer, 1, 256, input_text_file ) ) != 0 ) {
  fwrite( buffer, 1, n, OutputCarFile );
- Header.original_crc = CalculateBlockCRC32( n, Header.original_crc,
- buffer );
+ Header.original_crc = CalculateBlockCRC32( n, Header.original_crc, buffer );
  if ( ( ++pacifier & 15 ) == 0 )
  putc( '.', stderr );
  }
@@ -1162,8 +1144,8 @@ FILE *input_text_file;
  Header.original_crc ^= CRC_MASK;
  return( 1 );
 }
-unsigned long Unstore( destination )
-FILE *destination;
+unsigned long Unstore( FILE *destination )
+//FILE *destination;
 {
  unsigned long crc;
  unsigned int count;
@@ -1268,8 +1250,8 @@ int OutputPair();
 void InitInputBuffer();
 int InputBit();
 #endif
-void InitTree( r )
-int r;
+void InitTree( int r )
+//int r;
 {
  int i;
  for ( i = 0 ; i < ( WINDOW_SIZE + 1 ) ; i++ ) {
@@ -1287,9 +1269,9 @@ int r;
 * its descendant is broken by pulling the descendant in to overlay
 * the existing link.
 */
-void ContractNode( old_node, new_node )
-int old_node;
-int new_node;
+void ContractNode( int old_node, int new_node )
+//int old_node;
+//int new_node;
 {
  tree[ new_node ].parent = tree[ old_node ].parent;
  if ( tree[ tree[ old_node ].parent ].larger_child == old_node )
@@ -1303,9 +1285,9 @@ int new_node;
 * in this case, it is being replaced by a node that was not previously
 * in the tree.
 */
-void ReplaceNode( old_node, new_node )
-int old_node;
-int new_node;
+void ReplaceNode( int old_node, int new_node )
+//int old_node;
+//int new_node;
 {
  int parent;
  parent = tree[ old_node ].parent;
@@ -1324,8 +1306,8 @@ int new_node;
 * the next smallest child by going to the smaller_child node, then
 * going to the end of the larger_child descendant chain.
 */
-int FindNextNode( node )
-int node;
+int FindNextNode( int node )
+//int node;
 {
  int next;
  next = tree[ node ].smaller_child;
@@ -1341,8 +1323,8 @@ int node;
 * is guaranteed to have a null link, then replace the node to be deleted
 * with the next link.
 */
-void DeleteString( p )
-int p;
+void DeleteString( int p )
+//int p;
 {
  int replacement;
  if ( tree[ p ].parent == UNUSED )
@@ -1365,9 +1347,9 @@ int p;
 * even more complicated, if the new_node has a duplicate in the tree,
 * the old_node is deleted, for reasons of efficiency.
 */
-int AddString( new_node, match_position )
-int new_node;
-int *match_position;
+int AddString( int new_node, int *match_position )
+//int new_node;
+//int *match_position;
 {
  int i;
  int test_node;
@@ -1380,8 +1362,7 @@ int *match_position;
  match_length = 0;
  for ( ; ; ) {
  for ( i = 0 ; i < LOOK_AHEAD_SIZE ; i++ ) {
- delta = window[ MOD_WINDOW( new_node + 1 ) ] -
- window[ MOD_WINDOW( test_node + i ) ];
+ delta = window[ MOD_WINDOW( new_node + 1 ) ] - window[ MOD_WINDOW( test_node + i ) ];
  if ( delta != 0 )
  break;
  }
@@ -1481,8 +1462,8 @@ int FlushOutputBuffer()
 * FlushOutputBuffer() routine detects that the output has grown larger
 * than the input, it returns a 0 back to the calling routine.
 */
-int OutputChar( data )
-int data;
+int OutputChar( int data )
+//int data;
 {
  DataBuffer[ BufferOffset++ ] = (char) data;
  DataBuffer[ 0 ] |= FlagBitMask;
@@ -1505,9 +1486,9 @@ int data;
 * grown too large, it passes and error return back via this routine,
 * so that it can abort.
 */
-int OutputPair( position, length )
-int position;
-int length;
+int OutputPair( int position, int length )
+//int position;
+//int length;
 {
  DataBuffer[ BufferOffset ] = (char) ( length << 4 );
  DataBuffer[ BufferOffest++ ] |= ( position >> 8 );
@@ -1561,8 +1542,8 @@ int InputBit()
 * elements in Header data structure.
 *
 */
-int LZSSCompress( input_text_file )
-FILE *input_text_file;
+int LZSSCompress( FILE *input_text_file )
+//FILE *input_text_file;
 {
  int i;
  int c;
@@ -1593,9 +1574,8 @@ FILE *input_text_file;
  if ( ! OutputChar( window[ current_position ] ) )
  return( 0 );
  } else {
- if ( !OutputPair( match_position, match_length -
- ( BREAK_EVEN + 1 ) ) )
- return( 0 ):
+ if ( !OutputPair( match_position, match_length - ( BREAK_EVEN + 1 ) ) )
+ return( 0 );
  replace_count = match_length;
  }
  for ( i = 0 ; i < replace_count ; i++ ) {
@@ -1603,10 +1583,8 @@ FILE *input_text_file;
  if ( ( c = getc( input_text_file ) ) == EOF ) {
  look ahead bytes--;
  } else {
- Header.original_crc =
- UpdateCharacterCRC32( Header.original_crc, c );
- window[ MOD_WINDOW( current_position + LOOK_AHEAD_SIZE ) ] =
- (unsigned char) c;
+ Header.original_crc = UpdateCharacterCRC32( Header.original_crc, c );
+ window[ MOD_WINDOW( current_position + LOOK_AHEAD_SIZE ) ] = (unsigned char) c;
  }
  current_position = MOD_WINDOW( current_position + 1 );
  if ( current_position == 0 )
@@ -1625,8 +1603,8 @@ FILE *input_text_file;
 * for keeping track of the crc of the output data, and must return it
 * to the calling routine, for verification.
 */
-unsigned long LZSSExpand( output )
-FILE *output;
+unsigned long LZSSExpand( FILE *output )
+//FILE *output;
 {
  int i;
  int current_position;
