@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "errhand.h"
-#include "bitio.h"
+#include "lib/errhand.h"
+#include "lib/bitio.h"
 
 /*
 * The SYMBOL structure is what is used to define a symbol in
@@ -50,7 +50,7 @@ int convert_symbol_to_int();
 void initialize_arithmetic_encoder();
 void encode_symbol();
 void flush_arithmetic_encoder();
-short int get_current_count();
+int get_current_count();
 void initialize_arithmetic_decoder();
 void remove_symbol_from_stream();
 #endif 
@@ -93,7 +93,7 @@ char *argv[];
 	 encode_symbol( output, &s );
 	 flush_arithmetic_encoder( output );
 	 OutputBits( output, 0L, 16 );
-	 while ( argc–– > 0 ) {
+	 while ( argc-- > 0 ) {
 	 printf( "Unused argument: %s\n", *argv );
 	 argv++;
 	 }
@@ -132,9 +132,9 @@ char *argv[];
 	 if ( c == END_OF_STREAM )
 	 break;
 	 remove_symbol_from_stream( input, &s );
-	 putc( (char) c, output ):
+	 putc( (char) c, output );
 	 } 
-	 while ( argc–– > 0 ) {
+	 while ( argc-- > 0 ) {
 	 printf( "Unused argument: %s\n", *argv );
 	 argv++;
 	 }
@@ -170,7 +170,7 @@ void count_bytes( input, counts )
 FILE *input;
 unsigned long counts[];
 {
-	 long input_maker;
+	 long input_marker;
 	 int i;
 	 int c;
 	 for ( i = 0 ; i < 256; i++ )
@@ -259,7 +259,7 @@ unsigned char scaled_counts[];
 * read them in. In order to save space, I don't save all 256 symbols
 * unconditionally. The format used to store counts looks like this:
 *
-* start, stop, counts, start, stop, counts, … 0
+* start, stop, counts, start, stop, counts, � 0
 *
 * This means that I store runs of counts, until all the non-zero
 * counts have been stored. At this time the list is terminated by
@@ -307,7 +307,7 @@ unsigned char scaled_counts[];
 	 for ( ; last < 256 ; last++ )
 	 if ( scaled_counts[ last ] == 0 )
 	 break;
-	 last ––;
+	 last --;
 	 for ( next = last + 1; next < 256 ; next++ )
 	 if ( scaled_counts[ next ] != 0 )
 	 break;
@@ -388,7 +388,7 @@ FILE *input;
 static unsigned short int code;/* The present input code value */
 static unsigned short int low; /* Start of the current code range */
 static unsigned short int high;/* End of the current code range */
-long underflow_bits: /* Number of underflow bits pending */
+long underflow_bits; /* Number of underflow bits pending */
 /*
 * This routine must be called to initialize the encoding process.
 * The high register is initialized to all 1s, and it is assumed that
@@ -413,7 +413,7 @@ BIT_FILE *stream;
 {
 	 OutputBit( stream, low & 0x4000 );
 	 underflow_bits++;
-	 while ( underflow_bits–– > 0 )
+	 while ( underflow_bits-- > 0 )
 	 OutputBit( stream, ~low & 0x4000 );
 }
 
@@ -455,7 +455,7 @@ int count;
 SYMBOL *s;
 {
 	 int c;
-	 for ( c = END_OF_STREAM ; count < totals[ c ] ; c–– )
+	 for ( c = END_OF_STREAM ; count < totals[ c ] ; c-- )
 	 ;
 	 s->high_count = totals[ c + 1 ];
 	 s->low_count = totals[ c ];
@@ -506,7 +506,7 @@ SYMBOL *s;
 	 OutputBit( stream, high & 0x8000 );
 	 while ( underflow_bits > 0 ) {
 	 OutputBit( stream, ~high & 0x8000 );
-	 underflow_bits––;
+	 underflow_bits--;
 	 	}
 	 }
 
@@ -537,12 +537,12 @@ SYMBOL *s;
 *
 * code = count / s->scale
 */
-short int get_current_count( s ) 
+int get_current_count( s ) 
 SYMBOL *s;
 {
 	 long range;
 	 short int count;
-	 range = (long) ( high - low ) + l;
+	 range = (long) ( high - low ) + 1;
 	 count = (short int)
 	 ((((long) ( code - low ) + 1 ) * s->scale-1 ) / range ) ;
 	 return( count );
@@ -585,7 +585,7 @@ SYMBOL *s;
 /*
 * First, the range is expanded to account for the symbol removal.
 */
-	 range = (long)( high - low ) + l;
+	 range = (long)( high - low ) + 1;
 	 high = low + (unsigned short int)
 	 (( range * s->high_count ) / s->scale - 1);
 	 low = low + (unsigned short int)
@@ -612,7 +612,7 @@ SYMBOL *s;
 	 code ^= 0x4000; 
 	 low &= 0x3ffff;
 	 high |= 0x4000;
-	 } else
+	 } else{
 
 
 /*
@@ -625,4 +625,4 @@ SYMBOL *s;
 	 code <<= 1;
 	 code += InputBit( stream );
 	 }
-}              
+}
