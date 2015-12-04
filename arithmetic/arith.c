@@ -75,7 +75,7 @@ char *Usage = "in-file out-file\n\n";
 * bits loaded into the registers. The extra two bytes account for
 * that.
 */
-void CompressFile( input, output, argc, argv )
+void CompressFile( input, output, argc, argv );
 FILE * input;
 BIT_FILE *output;
 int argc;
