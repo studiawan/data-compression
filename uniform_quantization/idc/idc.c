@@ -1,7 +1,14 @@
-//#include "idc.h"
+#ifndef _IDC_
+#define _IDC_
+
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+
+/**
+ *  Author  : Djuned Fernando Djusdek - 5112.100.071
+ *  Last mod: 12/5/15                               
+ */
 
 void write_to_file(FILE **ofp, struct Queue **code_write) {
 	unsigned char temp[1];
@@ -58,7 +65,7 @@ void readimage(char input_image[], unsigned char **imgin, int row_size, int col_
 			fread(buffer, sizeof(char), 1, fp);
 //			printf("%c ", buffer[0]);
 			
-			imgin[row][col] = buffer[0];
+			imgin[row][col] = (unsigned char)buffer[0];
 		}
 	}
 	
@@ -170,3 +177,5 @@ void stuffit(int lable, int numbits, struct Queue **code_write, int end_flag) {
 //
 //
 //#define     myabs(x) ((x)<0? -(x): (x))
+
+#endif

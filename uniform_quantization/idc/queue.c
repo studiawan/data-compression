@@ -1,3 +1,11 @@
+#ifndef QUEUE
+#define QUEUE
+
+/**
+ *  Author  : Djuned Fernando Djusdek - 5112.100.071
+ *  Last mod: 12/5/15
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -52,4 +60,4 @@ void Print(struct Node **front) {
 	printf("}\n");
 }
 
-
+#endif
