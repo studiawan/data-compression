@@ -3,7 +3,7 @@ int image_size(char [], int *, int *);
 void readimage(char [], unsigned char **, int, int);
 int encuqi(int, int *, int);
 int decuqi(int, int *);
-void stuffit(int , int , FILE *, int );
+void stuffit(int , int , FILE **, int );
 int readnbits(int , FILE *);
 int uquan_enc(float ,  float , int , float );
 float uquan_dec(int,  float, float );
@@ -57,3 +57,5 @@ void write_code(NODE *root, int lgth, unsigned int *code, char *length, int *loc
 
 
 #define     myabs(x) ((x)<0? -(x): (x))
+
+#include "idc.c"
