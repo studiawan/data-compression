@@ -40,9 +40,9 @@ char *Usage = "in-file out-file\n\n";
 * actually plain text codes.
 */
 struct dictionary {
-int code_value;
-int parent_code;
-char character;
+	int code_value;
+	int parent_code;
+	char character;
 } dict[TABLE_SIZE ];
 char decode_stack[ TABLE_SIZE };
 /*
@@ -54,32 +54,28 @@ char decode_stack[ TABLE_SIZE };
 * are, the code for the combination of the code and character becomes
 * our new code.
 */
-void CompressFile( input, output, argc, argv )
-FILE *input;
-BIT_FILE *output;
-int argc;
-char *argv[];
+void CompressFile( FILE *input, BIT_FILE *output, int argc, char *argv[] )
 {
-int next_code;
-int character;
-int string_code;
-unsigned int index;
-unsigned int i;
-next_code = FIRST_CODE;
-for ( i = 0 ; i < TABLE_SIZE ; i++ )
-dict[ i ].code_value = UNUSED;
-if ( ( string_code = getc( input ) )== EOF )
-string_code = END_OF_STREAM;
-while ( ( character = getc( input ) ) != EOF ) {
-index = find_child_node( string_code, character );
-if ( dict[ index ].code_value != - 1)
-string_code = dict[ index ].code_value;
-else {
-if ( next_code <= MAX_CODE ) {
-dict[ index ].code_value = next_code++;
-dict[ index ].parent_code = string_code;
-dict[ index ].character = (char) character;
-}
+	int next_code;
+	int character;
+	int string_code;
+	unsigned int index;
+	unsigned int i;
+	next_code = FIRST_CODE;
+	for ( i = 0 ; i < TABLE_SIZE ; i++ )
+	dict[ i ].code_value = UNUSED;
+	if ( ( string_code = getc( input ) )== EOF )
+	string_code = END_OF_STREAM;
+	while ( ( character = getc( input ) ) != EOF ) {
+		index = find_child_node( string_code, character );
+		if ( dict[ index ].code_value != - 1)
+			string_code = dict[ index ].code_value;
+		else {
+		if ( next_code <= MAX_CODE ) {
+			dict[ index ].code_value = next_code++;
+			dict[ index ].parent_code = string_code;
+			dict[ index ].character = (char) character;
+		}
 OutputBits( output, (unsigned long) string_code, BITS );
 string_code = character;
 }
@@ -96,34 +92,30 @@ printf( "Unknown argument: %s\n", *argv++ ); }
 * occurs, the encoder outputs a code that is not presently defined
 * in the table. This is handled as an exception.
 */
-void ExpandFile( input, output, argc, argv )
-BIT_FILE *input;
-FILE *output;
-int argc;
-char *argv[];
+void ExpandFile( BIT_FILE *input, FILE *output, int argc, char *argv[] )
 {
-unsigned int next_code;
-unsigned int new_code;
-unsigned int old_code;
-int character;
-unsigned int count;
-next_code = FIRST_CODE;
-old_code = (unsigned int) InputBits( input, BITS );
-if ( old_code == END_OF_STREAM )
-return;
-character = old_code;
-putc( old_code, output );
-while ( ( new_code = (unsigned int) InputBits( input, BITS ) )
-!= END_OF_STREAM ) {
-/*
-** This code checks for the CHARACTER+STRING+CHARACTER+STRING+CHARACTER
-** case which generates an undefined code. It handles it by decoding
-** the last code, and adding a single character to the end of the
-** decode string.
-*/
-if (new_code >= next_code ) {
-decode_stack[ 0 ] = (char) character;
-count = decode_string( 1, old_code );
+	unsigned int next_code;
+	unsigned int new_code;
+	unsigned int old_code;
+	int character;
+	unsigned int count;
+	next_code = FIRST_CODE;
+	old_code = (unsigned int) InputBits( input, BITS );
+	if ( old_code == END_OF_STREAM )
+	return;
+	character = old_code;
+	putc( old_code, output );
+	while ( ( new_code = (unsigned int) InputBits( input, BITS ) )
+	!= END_OF_STREAM ) {
+	/*
+	** This code checks for the CHARACTER+STRING+CHARACTER+STRING+CHARACTER
+	** case which generates an undefined code. It handles it by decoding
+	** the last code, and adding a single character to the end of the
+	** decode string.
+	*/
+	if (new_code >= next_code ) {
+	decode_stack[ 0 ] = (char) character;
+	count = decode_string( 1, old_code );
 }
 else
 count = decode_string( 0, new_code );
