@@ -10,7 +10,7 @@
 *  Function:  encodes am image using uniform quantization.             *
 *  Author  : K. Sayood                                                 *
 *  Modified: Djuned Fernando Djusdek - 5112.100.071                    *
-*  Last mod: 12/5/15                                                   *
+*  Last mod: 12/6/15                                                   *
 *  Usage:  see usage()                                                 *
 ***********************************************************************/
 
@@ -180,12 +180,21 @@ void main(int argc, char **argv)
           stuffit(label,numbits,&code_write,end_flag);
          }
 
-//	Print(&code_write->front);
+//   Print(&code_write->front);
    while(code_write->size >= 8) {
      write_to_file(&ofp, &code_write);
    }
 	
-//	printf("%d", code_write->size);
+//   printf("%d", code_write->size);
+
+   FILE *fp;
+   fp = fopen(input_image, "rb");
+   double ratio_com = get_ratio(&fp, &ofp);
+   
+   printf("\n Ratio compression := %lf %%\n", ratio_com);
+   
+   fclose(fp);
+   fclose(ofp);
 
 }
 

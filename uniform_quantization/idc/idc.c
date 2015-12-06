@@ -7,13 +7,15 @@
 
 /**
  *  Author  : Djuned Fernando Djusdek - 5112.100.071
- *  Last mod: 12/5/15                               
+ *  Last mod: 12/6/15                               
  */
 
 void write_to_file(FILE **ofp, struct Queue **code_write) {
 	unsigned char temp[1];
 	temp[0] = temp[0] & 0x00;
-	for (int i=0; i<8; i++) {
+	int i = 0;
+	
+	for (i; i<8; ++i) {
 		if (Front(&(*code_write)->front) == '1') {
 			temp[0] ^= 0x01;
 		}
@@ -28,6 +30,16 @@ void write_to_file(FILE **ofp, struct Queue **code_write) {
 	fwrite((char*)temp, 1, sizeof(char), *ofp);
 	
 	return;
+}
+double get_ratio(FILE **fp, FILE **ofp) {
+	int size_ori, size_com;
+	fseek(*fp, 0L, SEEK_END);
+	size_ori = ftell(*fp);
+	
+	fseek(*ofp, 0L, SEEK_END);
+	size_com = ftell(*ofp);
+	
+	return size_com * 100.0 / size_ori;
 }
 
 //float ent(float [], int );
@@ -68,6 +80,8 @@ void readimage(char input_image[], unsigned char **imgin, int row_size, int col_
 			imgin[row][col] = (unsigned char)buffer[0];
 		}
 	}
+	
+	fclose(fp);
 	
 	return;
 }
