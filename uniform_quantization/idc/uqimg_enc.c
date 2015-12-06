@@ -9,7 +9,8 @@
 *  File:  uqimg_enc.c                                                  *
 *  Function:  encodes am image using uniform quantization.             *
 *  Author  : K. Sayood                                                 *
-*  Last mod: 5/12/95                                                   *
+*  Modified: Djuned Fernando Djusdek - 5112.100.071                    *
+*  Last mod: 12/6/15                                                   *
 *  Usage:  see usage()                                                 *
 ***********************************************************************/
 
@@ -25,22 +26,18 @@
 *authorized for use in life support devices or systems.                        *
 ********************************************************************************/
 
-
 void usage();
 
 void main(int argc, char **argv)
 {
     int row, col, row_size, col_size;
-    char input_image[50], qimage[50];
+    char input_image[512], qimage[512];
     unsigned char **imgin;
     int *bound, *reco, input, label, output, numlev, numbits, c;
     int minvalue, maxvalue, range, level, stepsize, temp, end_flag;
     FILE *ofp;
   extern int  optind;
   extern char *optarg;
-
-
-
 
     fprintf(stderr,"\n\n\t\tUniform Quantization of Images - Encoder\n");
 
@@ -82,10 +79,8 @@ void main(int argc, char **argv)
    case 'h':
          usage();
          exit(1);
-              }
+    }
    }
-
-
 
    if(numlev > 0 && numbits > 0)
    {
@@ -100,15 +95,19 @@ void main(int argc, char **argv)
      exit(1);
     }
    }
-     
-
-    
 
    if(numlev < 0 && numbits < 0)
    {
     fprintf(stderr,"\n Enter number of bits per pixel: ");
     scanf("%d",&numbits);
     numlev = (int) pow((double) 2,(double) numbits);  
+   }
+
+   if (numbits <= 0 || numbits >= 8) {
+    fprintf(stderr,"\n You have entered values for the number of bits that\n");
+    fprintf(stderr,"are not compatible.  The number of bits should between\n");
+    fprintf(stderr,"0 (zero) and 8 (eight).\n");
+    exit(1);
    }
 
    if(numlev < 0 && numbits > 0)
@@ -135,11 +134,6 @@ void main(int argc, char **argv)
       bound[level] = bound[level-1] + stepsize;
      }
 
-   
-
-
-
-
 /* Find out how large the image is */
 
     image_size(input_image, &row_size, &col_size);   
@@ -149,7 +143,6 @@ void main(int argc, char **argv)
     imgin  = (unsigned char **) calloc(row_size,sizeof(char *));  
     for(row=0; row<row_size; row++)
      imgin[row] = (unsigned char *) calloc((col_size),sizeof(char));
-
 
 /* Read the input image */
 
@@ -163,7 +156,14 @@ void main(int argc, char **argv)
    fwrite(&minvalue,1,sizeof(int),ofp);
    fwrite(&row_size,1,sizeof(int),ofp);
    fwrite(&col_size,1,sizeof(int),ofp);
-  
+
+   struct Queue* code_write;
+   code_write = (struct Queue*) malloc(sizeof(struct Queue));
+   code_write->front = NULL;
+   code_write->rear = NULL;
+   code_write->size = 0;
+	
+//   Print(&(code_write)->front);
 
 /* encode each pixel into an integer label and store  */
    end_flag = 0;
@@ -174,11 +174,30 @@ void main(int argc, char **argv)
             end_flag = 1;
           input = imgin[row][col];
           label = encuqi(input,bound,numlev);
-          stuffit(label,numbits,ofp,end_flag);
+//          printf("%d %d, ", input, label);
+//          printf("%d ", &ofp);
+//          stuffit(label,numbits,&ofp,end_flag);
+          stuffit(label,numbits,&code_write,end_flag);
          }
 
-
+//   Print(&code_write->front);
+   while(code_write->size >= 8) {
+     write_to_file(&ofp, &code_write);
    }
+	
+//   printf("%d", code_write->size);
+
+   FILE *fp;
+   fp = fopen(input_image, "rb");
+   double ratio_com = get_ratio(&fp, &ofp);
+   
+   printf("\n Ratio compression := %lf %%\n", ratio_com);
+   
+   fclose(fp);
+   fclose(ofp);
+
+}
+
 void usage()
 {
   fprintf(stderr,"Usage: uqimg_enc [-i input file][-o output file][-l numlev][-b numbits][-m maxvalue][-t minvalue][-x row_size][-y col_size][-h]\n");
@@ -197,9 +216,9 @@ void usage()
   fprintf(stderr,"\t the stepsize for the uniform quantizer,\n");
   fprintf(stderr,"\t row_size : Number of pixels in a row.\n");
   fprintf(stderr,"\t col_size : Number of rows of pixels.  If row_size and col_size\n");
-  fprintf(stderr,"\t\t are not provided, the program will check to see if the image \n");
-  fprintf(stderr,"\t\t corresponds to any of the standard sizes it is familiar with.  \n");
+  fprintf(stderr,"\t\t are not provided, the program will check to see if the image\n");
+  fprintf(stderr,"\t\t corresponds to any of the standard sizes it is familiar with.\n");
   fprintf(stderr,"\t\t To add to the list of standard sizes, edit image_size.c\n\n");
 
- 
+  return;
 }
