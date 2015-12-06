@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "idc.h"
+#include "idc.c"
 /**********************************************************************
 *                                                                      *
 *  File: huff_enc.c                                                    *
@@ -128,7 +129,7 @@ void main(int argc, char **argv)
 
 	fseek(ifp,0,2); /* set file pointer at end of file */
 	size = ftell(ifp); /* gets size of file */
-	
+
 	//++size;	//defaultnya gini tapi hasilnya size kelebihan 1. pengaruh pas fungsi value. #karsten
 	fseek(ifp,0,0); /* set file pointer to begining of file */
 
@@ -156,7 +157,7 @@ void main(int argc, char **argv)
         /* set values to zero */
         for(i = 0; i < num; i++)
         {
-        	
+
         	//values[i] = 1; defaultnya gini aneh. #karsten
             values[i] = 0;
         }
@@ -165,7 +166,7 @@ void main(int argc, char **argv)
 
         /* find values */
         value(values,file,size,num);
-        
+
         //	fprintf(stderr,"After value\n");
 
         /* find probs */
@@ -230,7 +231,7 @@ void usage()
 {
     fprintf(stderr,"Usage:\n");
     fprintf(stderr,"huff_enc [-i infile][-o outfile][-c codefile][-s storecode][-h]\n");
-    fprintf(stderr,"\t imagein : file containing the input to be encoded.  If no\n");
+    fprintf(stderr,"\t infile : file containing the input to be encoded.  If no\n");
     fprintf(stderr,"\t\t name is provided input is read from standard in.  This\n");
     fprintf(stderr,"\t\t feature can be used to directly encode the output of programs\n");
     fprintf(stderr,"\t\t such as jpegll_enc, and aqfimg_enc.\n");
