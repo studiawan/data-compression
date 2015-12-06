@@ -1,5 +1,13 @@
+#ifndef QUEUE
+#define QUEUE
+
 #include <stdio.h>
 #include <stdlib.h>
+
+/**
+ *  Author  : Djuned Fernando Djusdek - 5112.100.071
+ *  Last mod: 12/5/15
+ */
 
 struct Node {
 	char data;
@@ -52,4 +60,4 @@ void Print(struct Node **front) {
 	printf("}\n");
 }
 
-
+#endif

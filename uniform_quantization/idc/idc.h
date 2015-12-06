@@ -1,4 +1,13 @@
+#ifndef __IDC__
+#define __IDC__
+
 #include "queue.c"
+
+/**
+ *  Author  : K. Sayood
+ *  Modified: Djuned Fernando Djusdek - 5112.100.071
+ *  Last mod: 12/5/15
+ */
 
 struct Queue {
 	struct Node* front;
@@ -71,3 +80,5 @@ void stuffit(int , int , struct Queue **, int );
 //#define     myabs(x) ((x)<0? -(x): (x))
 
 #include "idc.c"
+
+#endif
