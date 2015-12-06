@@ -18,7 +18,7 @@
 * 0 and 1. Since we are using integer math, instead of using 0 and 1
 * as our end points, we have an integer scale. The low_count and
 * high_count define where the symbol falls in the range.
-*/ 
+*/
 typedef struct {
  unsigned short int low_count;
  unsigned short int high_count;
@@ -73,7 +73,7 @@ int max_order = 3;
 * input symbols and encoding them. One difference is that every 256
 * symbols a compression check is performed. If the compression ratio
 * falls below 10%, a flush character is encoded. This flushes the encod
-* ing model, and will cause the decoder to flush its model when the 
+* ing model, and will cause the decoder to flush its model when the
 * file is being expanded. The second difference is that each symbol is
 * repeatedly encoded until a successful encoding occurs. When trying to
 * encode a character in a particular order, the model may have to
@@ -135,7 +135,7 @@ char *argv[];
 *
 */
 void ExpandFile( input, output, argc, argv )
-BIT_FILE *input; 
+BIT_FILE *input;
 FILE *output;
 int argc;
 char *argv[];
@@ -167,20 +167,19 @@ char *argv[];
 * This routine checks for command line options. At present, the only
 * option being passed on the command line is the order.
 */
-void initialize_options( argc, argv )
-int argc;
-char *argv[];
+void initialize_options(int argc,char *argv[])
 {
- while ( argc–– > 0 ) {
-		 if ( strcmp( *argv, "-o" ) == 0 ) {
-		 argc––;
-		 max_order = atoi( *++argv );
-		 } else
-		 printf( "Uknown argument on command line: %s\n", *argv );
-		 argc––;
-		 argv++;
+ while ( argc-- > 0 ) {
+ 		if ( strcmp( *argv, "-o" ) == 0 ) {
+ 			argc--;
+ 			max_order = atoi( *++argv );
+ 		}
+		else
+ 		printf( "Uknown argument on command line: %s\n", *argv );
+ 			argc--;
+ 			argv++;
+ 		}
 	}
-}
 /*
 * This routine is called once every 256 input symbols. Its job is to
 * check to see if the compression ratio falls below 10%. If the
@@ -194,7 +193,7 @@ FILE *input;
 BIT_FILE *output;
 {
  static long local_input_marker = 0L;
- static long local_output_marker = 0L; 
+ static long local_output_marker = 0L;
  long total_input_bytes;
  long total_output_bytes;
  int local_ratio;
@@ -254,7 +253,7 @@ typedef struct {
 * leaf nodes, the LINKS array is a NULL pointer.
 */
 typedef struct {
- struct context *next; 
+ struct context *next;
 } LINKS;
 /*
 * The CONTEXT structure holds all of the known information about
@@ -313,7 +312,7 @@ CONTEXT *shift_to_next_context( CONTEXT *table, int c, int order );
 CONTEXT *allocate_next_order_table( CONTEXT *table,
  int symbol,
  CONTEXT *lesser_context );
-void recursive_flush( CONTEXT *table ); 
+void recursive_flush( CONTEXT *table );
 #else
 void update_table();
 void rescale_table();
@@ -342,21 +341,23 @@ void initialize_model()
  CONTEXT *control_table;
  current_order = max_order;
  contexts = (CONTEXT **) calloc( sizeof( CONTEXT * ), 10 );
- if ( contexts == NULL )
- fatal_error( "Failure #1: allocating context table!" );
- context += 2;
+
+ if ( contexts == NULL ) {
+ 	fatal_error( "Failure #1: allocating context table!" );
+ 	}
+ contexts += 2;
  null_table = (CONTEXT *) calloc( sizeof( CONTEXT ), 1 );
- if ( null_table == NULL )
- fatal_error( "Failure #2: allocating null table!" );
+
+if ( null_table == NULL ){
+
+	 fatal_error( "Failure #2: allocating null table!" );
+	}
  null_table->max_index = -1;
  contexts[ -1 ] = null_table;
- for ( i = 0 ; i <= max_order ; 1++ )
- contexts[ i ] = allocate_next_order_table( contexts[ i-1 ],
- 0,
- contexts[ i-1 ] );
+
+ for ( i = 0 ; i <= max_order ; i++ ) contexts[ i ] = allocate_next_order_table( contexts[ i-1 ], 0, contexts[ i-1 ] );
  free( (char *) null_table->stats );
- null_table->stats =
- (STATS &) calloc( sizeof( STATS ), 256 );
+ null_table->stats =  (STATS *) calloc( sizeof( STATS ), 256 );
  if ( null_table->stats == NULL )
  fatal_error( "Failure #3: allocating null table!" );
  null_table->max_index = 255;
@@ -373,9 +374,9 @@ void initialize_model()
  fatal_error( "Failure #5: allocating null table!" );
  contexts[ -2 ] = control_table;
  control_table->max_index = 1;
- control_table->stats[ 0 ].symbol = -FLUSH; 
+ control_table->stats[ 0 ].symbol = -FLUSH;
  control_table->stats[ 0 ].counts = 1;
- control_table->stats[ 1 ].symbol =– DONE;
+ control_table->stats[ 1 ].symbol =- DONE;
  control_table->stats[ 1 ].counts = 1;
  for ( i = 0 ; i < 256 ; i++ )
  scoreboard[ i ] = 0;
@@ -433,7 +434,7 @@ CONTEXT *lesser_context;
  if ( new_table == NULL )
  fatal_error( "Failure #8: allocating new table" );
  new_table->max_index = -1;
- table->links[ i ].next = new_table; 
+ table->links[ i ].next = new_table;
  new_table->lesser_context = lesser_context;
  return( new_table );
 }
@@ -492,7 +493,7 @@ int symbol;
  int index;
  unsigned char temp;
  CONTEXT *temp_ptr;
- unsigned int new_size; 
+ unsigned int new_size;
 /*
 * First, find the symbol in the appropriate context table. The first
 * symbol in the table is the most active, so start there.
@@ -554,7 +555,7 @@ int symbol;
 }
 /*
 * This routine is called when a given symbol needs to be encoded.
-* It is the job of this routine to find the symbol in the context 
+* It is the job of this routine to find the symbol in the context
 * table associated with the current table, and return the low and
 * high counts associated with that symbol, as well as the scale.
 * Finding the table is simple. Unfortunately, once I find the table,
@@ -576,7 +577,7 @@ SYMBOL *s;
  table = contexts[ current_order ];
  totalize_table( table );
  s->scale = totals[ 0 ];
- if ( current_order == –2 )
+ if ( current_order == -2 )
  c = -c;
  for ( i = 0 ; i <= table->max_index ; i++ ) {
  if ( c == (int) table->stats[ i ].symbol ) {
@@ -588,8 +589,8 @@ SYMBOL *s;
  }
  }
  s->low_count = totals[ 1 ];
- s->high-count = totals[ 0 ];
- current_order––;
+ s->high_count = totals[ 0 ];
+ current_order--;
  return( 1 );
 }
 /*
@@ -615,7 +616,7 @@ SYMBOL *s;
 * just has to look through that table. Once the match is found,
 * the appropriate character is returned to the caller. Two possible
 * complications. First, the character might be the ESCAPE character,
-* in which case the current_order has to be decremented. The other 
+* in which case the current_order has to be decremented. The other
 * complication. First, the character might be the ESCAPE character,
 * in which case the current_order has to be decremented. The other
 * complication is that the order might be -2, in which case we return
@@ -632,9 +633,9 @@ SYMBOL *s;
  for ( c = 0; count < totals[ c ] ; c++ )
  ;
  s->high_count = totals[ c - 1 ];
- s->low_count = totals[ c ]:
+ s->low_count = totals[ c ];
  if ( c == 1 ) {
- current_order––;
+ current_order--;
  return( ESCAPE );
  }
  if ( current_order < -1 )
@@ -664,7 +665,7 @@ int c;
  return;
  contexts[ max_order ] =
  shift_to_next_context( contexts[ max_order ], c, max_order );
- for ( i = max_order-1 ; i > 0 ; i–– )
+ for ( i = max_order-1 ; i > 0 ; i-- )
  contexts[ i ] = contexts[ i+1 ]->lesser_context;
 }
 /*
@@ -674,7 +675,7 @@ int c;
 * context table "ABC", and symbol 'D', with order max_order. What this
 * routine needs to do then is to find the context table "BCD". This
 * should be an easy job, and it is if the table already exists. All
-* we have to in that case is follow the back pointer from "ABC" to "BC". 
+* we have to in that case is follow the back pointer from "ABC" to "BC".
 * We then search the link table of "BC" until we find the link to "D".
 * That link points to "BCD", and that value is then returned to the
 * caller. The problem crops up when "BC" doesn't have a pointer to
@@ -736,7 +737,7 @@ int order;
 }
 /*
 * Rescaling the table needs to be done for one of three reasons.
-* First, if the maximum count for the table has exceeded 16383, it 
+* First, if the maximum count for the table has exceeded 16383, it
 * means that arithmetic coding using 16 and 32 bit registers might
 * no longer work. Secondly, if an individual symbol count has
 * reached 255, it will no longer fit in a byte. Third, if the
@@ -755,11 +756,11 @@ CONTEXT *table;
  return;
  for ( i = 0 ; i <= table->max_index ; i ++ )
  table->stats[ i ].counts /= 2;
- if ( table->stats[ table]>max_index ].counts == 0 &&
+ if ( table->stats[ table->max_index ].counts == 0 &&
  table->links == NULL ) {
  while ( table->stats[ table->max_index ].counts == 0 &&
  table->max_index >= 0 )
- table->max_index––;
+ table->max_index--;
  if ( table->max_index == -1 ) {
  free( (char *) table->stats );
  table->stats = NULL;
@@ -793,10 +794,10 @@ CONTEXT *table;
  max = 0;
  i = table->max_index + 2;
  totals[ i ] = 0;
- for ( ; i > 1 ; i- ) {
+ for ( ; i > 1 ; i-- ) {
  totals[ i-1 ] = totals[ i ];
  if ( table->stats[ i-2 ].counts )
- if ( ( current_order == -2 ) || 
+ if ( ( current_order == -2 ) ||
  scoreboard[ table->stats[ i-2 ].symbol ] == 0 )
  totals[ i-1 ] += table->stats[ i-2].counts;
  if ( table->stats[ i-2 ].counts > max )
@@ -854,8 +855,8 @@ void flush_model()
 /*
 * Everything from here down define the arithmetic coder section
 * of the program.
-*/ 
-*/
+
+
 * These four variables define the current state of the arithmetic
 * coder/decoder. They are assumed to be 16 bits long. Note that
 * by declaring them as short ints, they will actually be 16 bits
@@ -911,7 +912,7 @@ SYMBOL *s;
 * These three lines rescale high and low for the new symbol.
 */
  range = (long) ( high-low ) + 1;
- high = low + (unsigned short int) 
+ high = low + (unsigned short int)
  (( range * s->high_count ) / s->scale -1 );
  low = low + (unsigned short int)
  (( range * s->low_count ) / s->scale );
@@ -967,7 +968,7 @@ SYMBOL *s;
 /*
 * This routine is called to initialize the state of the arithmetic
 * decoder. This involves initializing the high and low registers
-* to their conventional starting values, plus reading the first 
+* to their conventional starting values, plus reading the first
 * 16 bits from the input stream into the code value.
 */
 void initialize_arithmetic_decoder( stream )
@@ -1020,7 +1021,7 @@ SYMBOL *s;
  } else
 /*
 * Otherwise, nothing can be shifted out, so I return.
-*/ 
+*/
  return;
  low <<= 1;
  high <<= 1;
