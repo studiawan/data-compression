@@ -81,19 +81,12 @@ int main( int argc, char* argv[] ) {
 		return 1;
 		
 	} else {
-		/*FILE *in;
+		FILE *in;
 		fopen(in, "rb");
 		
 		FILE *in2;
 		in2 = fopen(in2, "rb");
-		/*FILE in;
-		fopen();
-		std::ifstream in;
-		in.open( argv[1], std::ios::in | std::ios::binary );
 		
-		std::ifstream in2;
-		in2.open( argv[2], std::ios::in | std::ios::binary );
-		*/
 		char temp[128];
 		
 		int width, height;
