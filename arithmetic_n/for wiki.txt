@@ -1,0 +1,11 @@
+alice 68%
+asyou 65%
+cp.html 65%
+fields.c 69%
+grammar.lsp 65%
+kennedy.xls 78%
+lcet10.txt 70%
+plrabn 67%
+ptt5 88%
+sum 35%
+xargs 55%
