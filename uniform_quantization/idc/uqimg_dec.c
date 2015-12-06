@@ -77,6 +77,7 @@ void main(int argc, char **argv)
 
 
 
+
 /* Allocate space for the boundary and reconstruction values
 */
 
@@ -121,6 +122,7 @@ void main(int argc, char **argv)
     }
     
 //    Print(&code_read->front);
+//	printf("%d", numbits);
 
     unstuff(numbits,&code_read,buffer,&count);
     if(count != row_size*col_size)
@@ -136,6 +138,7 @@ void main(int argc, char **argv)
       for(col=0; col<col_size; col++)
          {
           label = buffer[count];
+//          printf("%d ", label);
           pixel = decuqi(label,reco);
           putc(pixel,ofp);
           count++;
