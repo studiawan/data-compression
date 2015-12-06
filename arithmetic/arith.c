@@ -65,7 +65,6 @@ void remove_symbol_from_stream();
 #endif
 
 #define END_OF_STREAM 256
-<<<<<<< HEAD
 short int totals[ 258 ];            /* The cumulative totals                */
 
 char *CompressionName = "Fixed order 0 model with arithmetic coding";
@@ -85,33 +84,10 @@ char *Usage           = "in-file out-file\n\n";
  */
 void CompressFile( input, output, argc, argv )
 FILE *input;
-=======
-short int totals[ 258 ]; /* The cumulative totals */
-char *CompressionName = "Adaptive order 0 model with arithmetic coding";
-char *Usage = "in-file out-file\n\n";
-
-
-
-/*
-* This compress file routine is a fairly orthodox compress routine.
-* It first gathers statistics, and initializes the arithmetic
-* encoder. It then encodes all the characters in the file, followed
-* by the EOF character. The output stream is then flushed, and we
-* exit. Note that an extra two bytes are output. When decoding an
-* arithmetic stream, we have to read in extra bits. The decoding process
-* takes place in the msb of the low and high range ints, so when we are
-* decoding our last bit we will still have to have at least 15 junk 
-* bits loaded into the registers. The extra two bytes account for
-* that.
-*/
-void CompressFile( input, output, argc, argv );
-FILE * input;
->>>>>>> 5bea7026ad14c4c4f0d42273b487aa1a16274136
 BIT_FILE *output;
 int argc;
 char *argv[];
 {
-<<<<<<< HEAD
     int c;
     SYMBOL s;
 
@@ -130,21 +106,6 @@ char *argv[];
         printf( "Unused argument: %s\n", *argv );
         argv++;
     }
-=======
-	 int c;
-	 SYMBOL s;
-	 build_model( input, output->file );
-	 initialize_arithmetic_encoder();
-	 while ( ( c = getc( input ) ) != EOF ) { convert_int_to_symbol( c, &s ); encode_symbol( output, &s ); }
-	 convert_int_to_symbol( END_OF_STREAM, &s );
-	 encode_symbol( output, &s );
-	 flush_arithmetic_encoder( output );
-	 OutputBits( output, 0L, 16 );
-	 while ( argc-- > 0 ) {
-	 printf( "Unused argument: %s\n", *argv );
-	 argv++;
-	 }
->>>>>>> 5bea7026ad14c4c4f0d42273b487aa1a16274136
 }
 
 /*
@@ -166,7 +127,6 @@ FILE *output;
 int argc;
 char *argv[];
 {
-<<<<<<< HEAD
     SYMBOL s;
     int c;
     int count;
@@ -186,23 +146,6 @@ char *argv[];
         printf( "Unused argument: %s\n", *argv );
         argv++;
     }
-=======
-	 SYMBOL s;
-	 int c;
-	 int count;
-	 input_counts( input->file );
-	 initialize_arithmetic_decoder( input );
-	 for ( ; ; ) {
-	 get_symbol_scale( &s );
-	 count = get_current_count( &s );
-	 c = convert_symbol_to_int( count, &s );
-	 if ( c == END_OF_STREAM )
-	 break;
-	 remove_symbol_from_stream( input, &s );
-	 putc( (char) c, output );
-	 } 
-	 while ( argc-- > 0 ) { printf( "Argument tidak terpakai : %s\n", *argv ); argv++; }
->>>>>>> 5bea7026ad14c4c4f0d42273b487aa1a16274136
 }
 
 /*
@@ -259,7 +202,6 @@ void scale_counts( counts, scaled_counts )
 unsigned long counts[];
 unsigned char scaled_counts[];
 {
-<<<<<<< HEAD
     int i;
     unsigned long max_count;
     unsigned int total;
@@ -295,45 +237,6 @@ unsigned char scaled_counts[];
         return;
     for ( i = 0 ; i < 256 ; i++ )
         scaled_counts[ i ] /= scale;
-=======
-	 int i;
-	 unsigned long max_count;
-	 unsigned int total;
-	 unsigned long scale;
-
-
-/*
-* The first section of code makes sure each count fits into a single
-* byte.
-*/
-	 max_count = 0;
-	 for ( i = 0 ; i < 256 ; i++ )
-	 if ( counts[ i ] > max_count )
-	 max_count = counts[ i ];
-	 scale = max_count / 256;
-	 scale = scale + 1;
-	 for ( i = 0 ; i < 256 ; i++ ) {
-	 scaled_counts[ i ] = (unsigned char ) ( counts[ i ] / scale );
-	 if ( scaled_counts[ i ] == 0 && counts[ i ] != 0 )
-	 scaled_counts[ i ] = 1;
-	 }
-
-
-/*
-* This next section makes sure the total is less than 16384.
-* I initialize the total to 1 instead of 0 because there will be an
-* additional 1 added in for the END_OF_STREAM symbol;
-*/
-	 total = 1;
-	 for ( i = 0 ; i < 256 ; i++ ) total += scaled_counts[ i ];
-	 if ( total > ( 32767 - 256 ) ) scale = 4;
-	 else if ( total > 16383 )
-	 scale = 2;
-	 else
-	 return;
-	 for ( i = 0 ; i < 256 ; i++ )
-	 scaled_counts[ i ] /= scale;
->>>>>>> 5bea7026ad14c4c4f0d42273b487aa1a16274136
 }
 
 /*
@@ -345,15 +248,7 @@ unsigned char scaled_counts[];
 void build_totals( scaled_counts )
 unsigned char scaled_counts[];
 {
-<<<<<<< HEAD
     int i;
-=======
-	 int i;
-	 totals[ 0 ] = 0;
-	 for ( i = 0 ; i < END_OF_STREAM ; i++ ) totals[ i + 1 ] = totals[ i ] + scaled_counts[ i ];
-	 totals[ END_OF_STREAM + 1 ] = totals[ END_OF_STREAM ] + 1;
-}
->>>>>>> 5bea7026ad14c4c4f0d42273b487aa1a16274136
 
     totals[ 0 ] = 0;
     for ( i = 0 ; i < END_OF_STREAM ; i++ )
@@ -362,7 +257,6 @@ unsigned char scaled_counts[];
 }
 
 /*
-<<<<<<< HEAD
  * In order for the compressor to build the same model, I have to store
  * the symbol counts in the compressed file so the expander can read
  * them in.  In order to save space, I don't save all 256 symbols
@@ -389,34 +283,6 @@ unsigned char scaled_counts[];
  * simpler, but would hurt compression quite a bit on small files.
  *
  */
-=======
-* In order for the compressor to build the same model, I have to
-* store the symbol counts in the compressed file so the expander can
-* read them in. In order to save space, I don't save all 256 symbols
-* unconditionally. The format used to store counts looks like this:
-*
-* start, stop, counts, start, stop, counts, … 0
-*
-* This means that I store runs of counts, until all the non-zero
-* counts have been stored. At this time the list is terminated by
-* storing a start value of 0. Note that at least 1 run of counts has
-* to be stored, so even if the first start value is 0, I read it in. 
-* It also means that even in an empty file that has no counts, I have
-* to pass at least one count.
-*
-* In order to efficiently use this format, I have to identify runs of
-* non-zero counts. Because of the format used, I don't want to stop a
-* run because of just one or two zeros in the count stream. So I have
-* to sit in a loop looking for strings of three or more zero values
-* in a row.
-*
-* This is simple in concept, but it ends up being one of the most
-* complicated routines in the whole program. A routine that just
-* writes out 256 values without attempting to optimize would be much
-* simpler, but would hurt compression quite a bit on small files.
-*
-*/
->>>>>>> 5bea7026ad14c4c4f0d42273b487aa1a16274136
 void output_counts( output, scaled_counts )
 FILE *output;
 unsigned char scaled_counts[];
