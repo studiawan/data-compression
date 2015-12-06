@@ -7,8 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "errand.h"
-#include "bitio.h"
+#include "../lib/errand.h"
+#include "../lib/bitio.h"
 /*
 * Constants used throughout the program. BITS defines how many bits
 * will be in a code. TABLE_SIZE defines the size of the dictionary
@@ -44,7 +44,7 @@ struct dictionary {
 	int parent_code;
 	char character;
 } dict[TABLE_SIZE ];
-char decode_stack[ TABLE_SIZE ];
+char decode_stack[ TABLE_SIZE };
 /*
 * The compressor is short and simple. It reads in new symbols one
 * at a time from the input file. It then checks to see if the
@@ -54,7 +54,7 @@ char decode_stack[ TABLE_SIZE ];
 * are, the code for the combination of the code and character becomes
 * our new code.
 */
-void CompressFile( FILE *input, BIT_FILE *output, int argc, char *argv[] )
+void CompressFile( FILE *input, BIT_FILE *output, int argc, char *argv[])
 {
 	int next_code;
 	int character;
@@ -63,27 +63,32 @@ void CompressFile( FILE *input, BIT_FILE *output, int argc, char *argv[] )
 	unsigned int i;
 	next_code = FIRST_CODE;
 	for ( i = 0 ; i < TABLE_SIZE ; i++ )
-	dict[ i ].code_value = UNUSED;
+		dict[ i ].code_value = UNUSED;
+	
 	if ( ( string_code = getc( input ) )== EOF )
 	string_code = END_OF_STREAM;
+	
 	while ( ( character = getc( input ) ) != EOF ) {
 		index = find_child_node( string_code, character );
+		
 		if ( dict[ index ].code_value != - 1)
-			string_code = dict[ index ].code_value;
+		string_code = dict[ index ].code_value;
+		
 		else {
-		if ( next_code <= MAX_CODE ) {
-			dict[ index ].code_value = next_code++;
-			dict[ index ].parent_code = string_code;
-			dict[ index ].character = (char) character;
+			if ( next_code <= MAX_CODE ) {
+				dict[ index ].code_value = next_code++;
+				dict[ index ].parent_code = string_code;
+				dict[ index ].character = (char) character;
+			}
+			OutputBits( output, (unsigned long) string_code, BITS );
+			string_code = character;
 		}
-OutputBits( output, (unsigned long) string_code, BITS );
-string_code = character;
+	}
+	OutputBits( output, (unsigned long) string_code, BITS );
+	OutputBits( output, (unsigned long) END_OF_STREAM, BITS );
+	while ( argc-- > 0 )
+	printf( "Unknown argument: %s\n", *argv++ ); 
 }
-}
-OutputBits( output, (unsigned long) string_code, BITS );
-OutputBits( output, (unsigned long) END_OF_STREAM, BITS );
-while ( argc-- > 0 )
-printf( "Unknown argument: %s\n", *argv++ ); }
 /*
 * The file expander operates much like the encoder. It has to
 * read in codes, then convert the codes to a string of characters.
@@ -92,7 +97,7 @@ printf( "Unknown argument: %s\n", *argv++ ); }
 * occurs, the encoder outputs a code that is not presently defined
 * in the table. This is handled as an exception.
 */
-void ExpandFile( BIT_FILE *input, FILE *output, int argc, char *argv[] )
+void ExpandFile( FILE *input, BIT_FILE *output, int argc, char *argv[] )
 {
 	unsigned int next_code;
 	unsigned int new_code;
@@ -103,34 +108,38 @@ void ExpandFile( BIT_FILE *input, FILE *output, int argc, char *argv[] )
 	old_code = (unsigned int) InputBits( input, BITS );
 	if ( old_code == END_OF_STREAM )
 	return;
+
 	character = old_code;
 	putc( old_code, output );
-	while ( ( new_code = (unsigned int) InputBits( input, BITS ) )
-	!= END_OF_STREAM ) {
-	/*
-	** This code checks for the CHARACTER+STRING+CHARACTER+STRING+CHARACTER
-	** case which generates an undefined code. It handles it by decoding
-	** the last code, and adding a single character to the end of the
-	** decode string.
-	*/
-	if (new_code >= next_code ) {
-	decode_stack[ 0 ] = (char) character;
-	count = decode_string( 1, old_code );
-}
-else
-count = decode_string( 0, new_code );
-character = decode_string[ count - 1 ];
-while ( count > 0 )
-putc( decode_stack[ --count ], output );
-if ( next_code <= MAX_CODE ) {
-dict[ next_code ].parent_code = old_code;
-dict[ next_code ].character = (char) character;
-next_code++;
-}
-old_code = new_code;
-}
-while ( argc-- > 0 )
-print( "Unknown argument: %s\n", *argv++ );
+	while ( ( new_code = (unsigned int) InputBits( input, BITS ) )!= END_OF_STREAM ) {
+		/*
+		** This code checks for the CHARACTER+STRING+CHARACTER+STRING+CHARACTER
+		** case which generates an undefined code. It handles it by decoding
+		** the last code, and adding a single character to the end of the
+		** decode string.
+		*/
+		if (new_code >= next_code ) {
+			decode_stack[ 0 ] = (char) character;
+			count = decode_string( 1, old_code );
+		}
+		else
+			count = decode_string( 0, new_code );
+		
+		character = decode_string[ count - 1 ];
+		
+		while ( count > 0 )
+			putc( decode_stack[ --count ], output );
+		
+		if ( next_code <= MAX_CODE ) {
+			dict[ next_code ].parent_code = old_code;
+			dict[ next_code ].character = (char) character;
+			next_code++;
+		}
+
+		old_code = new_code;
+	}
+	while ( argc-- > 0 )
+	print( "Unknown argument: %s\n", *argv++ );
 }
 /*
 * This hashing routine is responsible for finding the table location
@@ -139,42 +148,43 @@ print( "Unknown argument: %s\n", *argv++ );
 * This code also has to check for collisions, and handles them by
 * jumping around in the table.
 */
-unsigned int find_child_node( parent_code, child_character )
-int parent_code;
-int child_character;
+unsigned int find_child_node( int parent_code, int child_character)
 {
-int index;
-int offset;
-index = ( child_character << ( BITS - 8 ) ) ^ parent_code;
-if ( index == 0 )
-offset = 1;
-else
-offset = TABLE_SIZE - index;
-for ( ; ; ) {
-if ( dict[ index ].code_value == UNUSED )
-return( index );
-if ( dict[ index ].parent_code == parent_code &&
-dict[ index ].character == (char) child_character )
-return( index );
-index -= offset;
-if ( index < 0 )
-index += TABLE_SIZE;
-}
+	int index;
+	int offset;
+	index = ( child_character << ( BITS - 8 ) ) ^ parent_code;
+	if ( index == 0 )
+	offset = 1;
+
+	else
+	offset = TABLE_SIZE - index;
+
+	for ( ; ; ) {
+		if ( dict[ index ].code_value == UNUSED )
+		return( index );
+
+		if ( dict[ index ].parent_code == parent_code && dict[ index ].character == (char) child_character )
+		return( index );
+		
+		index -= offset;
+		
+		if ( index < 0 )
+		index += TABLE_SIZE;
+	}
 }
 /*
 * This routine decodes a string from the dictionary, and stores it
 * in the decode_stack data structure. It returns a count to the
 * calling program of how many characters were placed in the stack.
 */
-unsigned int decode_string( count, code )
-unsigned int count;
-unsigned int code;
+unsigned int decode_string( unsigned int count, unsigned int code)
 {
-while ( code > 255 ) {
-decode_stack[ count++ ] = dict[ code ].character;
-code = dict[ code ].parent_code;
-}
-decode_stack[ count++ ] = (char) code;
-return( count );
+	while ( code > 255 ) {
+		decode_stack[ count++ ] = dict[ code ].character;
+		code = dict[ code ].parent_code;
+	}
+
+	decode_stack[ count++ ] = (char) code;
+	return( count );
 }
 /*************************** End of LZW12.C ****************************/
