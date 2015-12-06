@@ -13,7 +13,9 @@
 void write_to_file(FILE **ofp, struct Queue **code_write) {
 	unsigned char temp[1];
 	temp[0] = temp[0] & 0x00;
-	for (int i=0; i<8; i++) {
+	int i = 0;
+	
+	for (i; i<8; ++i) {
 		if (Front(&(*code_write)->front) == '1') {
 			temp[0] ^= 0x01;
 		}
