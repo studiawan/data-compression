@@ -135,7 +135,7 @@ char *argv[];
 	 putc( (char) c, output );
 	 } 
 	 while ( argc-- > 0 ) {
-	 printf( "Unused argument: %s\n", *argv );
+	 printf( "Argument tidak terpakai : %s\n", *argv );
 	 argv++;
 	 }
 }
@@ -259,7 +259,7 @@ unsigned char scaled_counts[];
 * read them in. In order to save space, I don't save all 256 symbols
 * unconditionally. The format used to store counts looks like this:
 *
-* start, stop, counts, start, stop, counts, … 0
+* start, stop, counts, start, stop, counts, â€¦ 0
 *
 * This means that I store runs of counts, until all the non-zero
 * counts have been stored. At this time the list is terminated by
