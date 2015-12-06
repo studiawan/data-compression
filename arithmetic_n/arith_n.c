@@ -376,7 +376,7 @@ if ( null_table == NULL ){
  control_table->max_index = 1;
  control_table->stats[ 0 ].symbol = -FLUSH; 
  control_table->stats[ 0 ].counts = 1;
- control_table->stats[ 1 ].symbol =- DONE;
+ control_table->stats[ 1 ].symbol =– DONE;
  control_table->stats[ 1 ].counts = 1;
  for ( i = 0 ; i < 256 ; i++ )
  scoreboard[ i ] = 0;
@@ -577,7 +577,7 @@ SYMBOL *s;
  table = contexts[ current_order ];
  totalize_table( table );
  s->scale = totals[ 0 ];
- if ( current_order == -2 )
+ if ( current_order == –2 )
  c = -c;
  for ( i = 0 ; i <= table->max_index ; i++ ) {
  if ( c == (int) table->stats[ i ].symbol ) {
@@ -589,8 +589,8 @@ SYMBOL *s;
  }
  }
  s->low_count = totals[ 1 ];
- s->high_count = totals[ 0 ];
- current_order--;
+ s->high-count = totals[ 0 ];
+ current_order––;
  return( 1 );
 }
 /*
@@ -633,9 +633,9 @@ SYMBOL *s;
  for ( c = 0; count < totals[ c ] ; c++ )
  ;
  s->high_count = totals[ c - 1 ];
- s->low_count = totals[ c ];
+ s->low_count = totals[ c ]:
  if ( c == 1 ) {
- current_order;
+ current_order––;
  return( ESCAPE );
  }
  if ( current_order < -1 )
@@ -665,7 +665,7 @@ int c;
  return;
  contexts[ max_order ] =
  shift_to_next_context( contexts[ max_order ], c, max_order );
- for ( i = max_order-1 ; i > 0 ; i-- )
+ for ( i = max_order-1 ; i > 0 ; i–– )
  contexts[ i ] = contexts[ i+1 ]->lesser_context;
 }
 /*
@@ -756,10 +756,11 @@ CONTEXT *table;
  return;
  for ( i = 0 ; i <= table->max_index ; i ++ )
  table->stats[ i ].counts /= 2;
- if ( table->stats[ table->max_index ].counts == 0 &&  table->links == NULL ) {
+ if ( table->stats[ table]>max_index ].counts == 0 &&
+ table->links == NULL ) {
  while ( table->stats[ table->max_index ].counts == 0 &&
  table->max_index >= 0 )
- table->max_index--;
+ table->max_index––;
  if ( table->max_index == -1 ) {
  free( (char *) table->stats );
  table->stats = NULL;
@@ -793,7 +794,7 @@ CONTEXT *table;
  max = 0;
  i = table->max_index + 2;
  totals[ i ] = 0;
- for ( ; i > 1 ; i-- ) {
+ for ( ; i > 1 ; i- ) {
  totals[ i-1 ] = totals[ i ];
  if ( table->stats[ i-2 ].counts )
  if ( ( current_order == -2 ) || 
@@ -854,8 +855,8 @@ void flush_model()
 /*
 * Everything from here down define the arithmetic coder section
 * of the program.
- 
-
+*/ 
+*/
 * These four variables define the current state of the arithmetic
 * coder/decoder. They are assumed to be 16 bits long. Note that
 * by declaring them as short ints, they will actually be 16 bits
