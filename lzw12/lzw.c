@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../lib/errand.h"
+#include "../lib/errhand.h"
 #include "../lib/bitio.h"
 /*
 * Constants used throughout the program. BITS defines how many bits
@@ -44,7 +44,7 @@ struct dictionary {
 	int parent_code;
 	char character;
 } dict[TABLE_SIZE ];
-char decode_stack[ TABLE_SIZE };
+char decode_stack[ TABLE_SIZE ];
 /*
 * The compressor is short and simple. It reads in new symbols one
 * at a time from the input file. It then checks to see if the
@@ -97,7 +97,7 @@ void CompressFile( FILE *input, BIT_FILE *output, int argc, char *argv[])
 * occurs, the encoder outputs a code that is not presently defined
 * in the table. This is handled as an exception.
 */
-void ExpandFile( FILE *input, BIT_FILE *output, int argc, char *argv[] )
+void ExpandFile( BIT_FILE *input,  FILE *output, int argc, char *argv[] )
 {
 	unsigned int next_code;
 	unsigned int new_code;
@@ -125,7 +125,7 @@ void ExpandFile( FILE *input, BIT_FILE *output, int argc, char *argv[] )
 		else
 			count = decode_string( 0, new_code );
 		
-		character = decode_string[ count - 1 ];
+		character = decode_stack[ count - 1 ];
 		
 		while ( count > 0 )
 			putc( decode_stack[ --count ], output );
