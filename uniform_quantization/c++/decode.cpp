@@ -99,6 +99,8 @@ void uq_dec(std::queue<char> *code_read, unsigned char *buffer_out, int bit_len,
 			(*code_read).pop();
 		}
 		
+//		std::cout << (int)temp << " " << (int)temp + 1 << " " << ((int)temp + 1) * mid << '\n';
+//		getchar();
 		buffer_out[iter++] = (unsigned char)(((int)temp + 1) * mid);
 	}
 	

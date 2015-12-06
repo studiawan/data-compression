@@ -44,7 +44,7 @@ struct dictionary {
 	int parent_code;
 	char character;
 } dict[TABLE_SIZE ];
-char decode_stack[ TABLE_SIZE };
+char decode_stack[ TABLE_SIZE ];
 /*
 * The compressor is short and simple. It reads in new symbols one
 * at a time from the input file. It then checks to see if the

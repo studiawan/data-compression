@@ -148,7 +148,7 @@ char argv[];
             putc( c, output );
     }
     while ( argc-- > 0 )
-        printf( "Unused argument: %s\n", *argv++ );
+        printf( "argumen tidak terpakai: %s\n", *argv++ );
 }
 /*
 * This support routine checks to see if the look-ahead buffer
