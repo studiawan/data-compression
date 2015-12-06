@@ -85,10 +85,7 @@ char *argv[];
 	 SYMBOL s;
 	 build_model( input, output->file );
 	 initialize_arithmetic_encoder();
-	 while ( ( c = getc( input ) ) != EOF ) {
-	 convert_int_to_symbol( c, &s );
-	 encode_symbol( output, &s );
-	 }
+	 while ( ( c = getc( input ) ) != EOF ) { convert_int_to_symbol( c, &s ); encode_symbol( output, &s ); }
 	 convert_int_to_symbol( END_OF_STREAM, &s );
 	 encode_symbol( output, &s );
 	 flush_arithmetic_encoder( output );
@@ -134,10 +131,7 @@ char *argv[];
 	 remove_symbol_from_stream( input, &s );
 	 putc( (char) c, output );
 	 } 
-	 while ( argc-- > 0 ) {
-	 printf( "Argument tidak terpakai : %s\n", *argv );
-	 argv++;
-	 }
+	 while ( argc-- > 0 ) { printf( "Argument tidak terpakai : %s\n", *argv ); argv++; }
 }
 
 
@@ -223,10 +217,8 @@ unsigned char scaled_counts[];
 * additional 1 added in for the END_OF_STREAM symbol;
 */
 	 total = 1;
-	 for ( i = 0 ; i < 256 ; i++ )
-	 total += scaled_counts[ i ];
-	 if ( total > ( 32767 - 256 ) )
-	 scale = 4;
+	 for ( i = 0 ; i < 256 ; i++ ) total += scaled_counts[ i ];
+	 if ( total > ( 32767 - 256 ) ) scale = 4;
 	 else if ( total > 16383 )
 	 scale = 2;
 	 else
@@ -247,8 +239,7 @@ unsigned char scaled_counts[];
 {
 	 int i;
 	 totals[ 0 ] = 0;
-	 for ( i = 0 ; i < END_OF_STREAM ; i++ )
-	 totals[ i + 1 ] = totals[ i ] + scaled_counts[ i ];
+	 for ( i = 0 ; i < END_OF_STREAM ; i++ ) totals[ i + 1 ] = totals[ i ] + scaled_counts[ i ];
 	 totals[ END_OF_STREAM + 1 ] = totals[ END_OF_STREAM ] + 1;
 }
 
