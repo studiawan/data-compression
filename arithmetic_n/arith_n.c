@@ -341,11 +341,12 @@ void initialize_model()
  CONTEXT *control_table;
  current_order = max_order;
  contexts = (CONTEXT **) calloc( sizeof( CONTEXT * ), 10 );
+ 
  if ( contexts == NULL ) {
  	fatal_error( "Failure #1: allocating context table!" );
  	}
-contexts += 2;
-null_table = (CONTEXT *) calloc( sizeof( CONTEXT ), 1 );
+ contexts += 2;
+ null_table = (CONTEXT *) calloc( sizeof( CONTEXT ), 1 );
 
 if ( null_table == NULL ){
 
@@ -353,13 +354,10 @@ if ( null_table == NULL ){
 	}
  null_table->max_index = -1;
  contexts[ -1 ] = null_table;
- for ( i = 0 ; i <= max_order ; i++ )
- contexts[ i ] = allocate_next_order_table( contexts[ i-1 ],
- 0,
- contexts[ i-1 ] );
+ 
+ for ( i = 0 ; i <= max_order ; i++ ) contexts[ i ] = allocate_next_order_table( contexts[ i-1 ], 0, contexts[ i-1 ] );
  free( (char *) null_table->stats );
- null_table->stats =
- (STATS &) calloc( sizeof( STATS ), 256 );
+ null_table->stats =  (STATS *) calloc( sizeof( STATS ), 256 );
  if ( null_table->stats == NULL )
  fatal_error( "Failure #3: allocating null table!" );
  null_table->max_index = 255;
