@@ -44,7 +44,7 @@ struct dictionary {
 	int parent_code;
 	char character;
 } dict[TABLE_SIZE ];
-char decode_stack[ TABLE_SIZE ];
+char decode_stack[ TABLE_SIZE };
 /*
 * The compressor is short and simple. It reads in new symbols one
 * at a time from the input file. It then checks to see if the
@@ -54,11 +54,7 @@ char decode_stack[ TABLE_SIZE ];
 * are, the code for the combination of the code and character becomes
 * our new code.
 */
-void CompressFile( input, output, argc, argv )
-FILE *input;
-BIT_FILE *output;
-int argc;
-char *argv[];
+void CompressFile( FILE *input, BIT_FILE *output, int argc, char *argv[])
 {
 	int next_code;
 	int character;
@@ -101,11 +97,7 @@ char *argv[];
 * occurs, the encoder outputs a code that is not presently defined
 * in the table. This is handled as an exception.
 */
-void ExpandFile( input, output, argc, argv )
-BIT_FILE *input;
-FILE *output;
-int argc;
-char *argv[];
+void ExpandFile( FILE *input, BIT_FILE *output, int argc, char *argv[] )
 {
 	unsigned int next_code;
 	unsigned int new_code;
@@ -156,9 +148,7 @@ char *argv[];
 * This code also has to check for collisions, and handles them by
 * jumping around in the table.
 */
-unsigned int find_child_node( parent_code, child_character )
-int parent_code;
-int child_character;
+unsigned int find_child_node( int parent_code, int child_character)
 {
 	int index;
 	int offset;
@@ -187,9 +177,7 @@ int child_character;
 * in the decode_stack data structure. It returns a count to the
 * calling program of how many characters were placed in the stack.
 */
-unsigned int decode_string( count, code )
-unsigned int count;
-unsigned int code;
+unsigned int decode_string( unsigned int count, unsigned int code)
 {
 	while ( code > 255 ) {
 		decode_stack[ count++ ] = dict[ code ].character;
