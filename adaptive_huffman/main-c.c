@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 	setbuf( stdout, NULL );
 	if ( argc < 3 )
 		usage_exit( argv[ 0 ] );
-	input = fopen( argv[ 1 ], "r" );
+	input = fopen( argv[ 1 ], "rb" );
 	if ( input == NULL )
 		fatal_error( "Error opening %s for input %d \n", argv[ 1 ],'\n');
 	output = OpenOutputBitFile( argv[ 2 ] );
