@@ -9,7 +9,8 @@
 *  File: uqimg_dec.c                                                   *
 *  Function:  reconstructs an image compressed using uqimg_enc.        *
 *  Author  : K. Sayood                                                 *
-*  Last mod: 5/12/95                                                   *
+*  Modified: Djuned Fernando Djusdek - 5112.100.071                    *
+*  Last mod: 12/6/15                                                   *
 *  Usage:  see usage(), for details see uqimg_dec.doc or the man page. *
 *                                                                      *
 ***********************************************************************/
@@ -76,6 +77,7 @@ void main(int argc, char **argv)
 
 
 
+
 /* Allocate space for the boundary and reconstruction values
 */
 
@@ -108,7 +110,21 @@ void main(int argc, char **argv)
 
 /* Read the coded image */
 
-    unstuff(numbits,ifp,buffer,&count);
+    struct Queue* code_read;
+    code_read = (struct Queue*) malloc(sizeof(struct Queue));
+    code_read->front = NULL;
+    code_read->rear = NULL;
+    code_read->size = 0;
+
+    int oke = 1;
+    while(oke == 1) {
+     oke = read_from_file(&ifp, &code_read);
+    }
+    
+//    Print(&code_read->front);
+//	printf("%d", numbits);
+
+    unstuff(numbits,&code_read,buffer,&count);
     if(count != row_size*col_size)
     {
      fprintf(stderr,"Mismatch in amount of data\n");
@@ -122,6 +138,7 @@ void main(int argc, char **argv)
       for(col=0; col<col_size; col++)
          {
           label = buffer[count];
+//          printf("%d ", label);
           pixel = decuqi(label,reco);
           putc(pixel,ofp);
           count++;

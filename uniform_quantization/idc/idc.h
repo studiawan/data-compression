@@ -23,7 +23,7 @@ double get_ratio(FILE **, FILE **);
 int image_size(char [], int *, int *);
 void readimage(char [], unsigned char **, int, int);
 int encuqi(int, int *, int);
-//int decuqi(int, int *);
+int decuqi(int, int *);
 void stuffit(int , int , struct Queue **, int );
 //void stuffit(int , int , FILE **, int );
 //int readnbits(int , FILE *);
@@ -35,7 +35,8 @@ void stuffit(int , int , struct Queue **, int );
 //int vqencode( int *, int **,  int, int,float *);
 ///* vqencode(input,codebook,codebook_size,dimension,&distortion)
 //returns the index in the codebook of the closest codeword */
-//void unstuff(int , FILE *, int *, int *);
+void unstuff(int , struct Queue **, int *, int *);
+//void unstuff(int , FILE **, int *, int *);
 //int readau(char filename[], short aufile[]);
 //int get_file_size(char [], int *);
 //float predictor(int ,int ,float [],float [], float *);

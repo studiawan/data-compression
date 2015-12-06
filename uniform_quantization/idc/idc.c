@@ -12,7 +12,7 @@
 
 void write_to_file(FILE **ofp, struct Queue **code_write) {
 	unsigned char temp[1];
-	temp[0] = temp[0] & 0x00;
+	temp[0] &= 0x00;
 	int i = 0;
 	
 	for (i; i<8; ++i) {
@@ -40,6 +40,31 @@ double get_ratio(FILE **fp, FILE **ofp) {
 	size_com = ftell(*ofp);
 	
 	return size_com * 100.0 / size_ori;
+}
+int read_from_file(FILE **ifp, struct Queue **code_read) {
+	char temp[1];
+	temp[0] &= 0x00;
+	
+	if (fread(temp, sizeof(char), 1, *ifp) > 0) {
+		for (int i=0; i<8; i++) {
+			if ((temp[0] & 0x80) == 0x80) {
+				Enqueue(&(*code_read)->front, &(*code_read)->rear, '1');
+				(*code_read)->size++;
+				
+			} else {
+				Enqueue(&(*code_read)->front, &(*code_read)->rear, '0');
+				(*code_read)->size++;
+				
+			}
+			temp[0] <<= 1;
+		}
+		
+		return 1;
+		
+	} else {
+		return -1;
+		
+	}
 }
 
 //float ent(float [], int );
@@ -90,11 +115,15 @@ int encuqi(int input, int *bound, int numlev) {
 	
 	for (iter; iter<=numlev; ++iter) {
 		if (input < bound[iter]) {
+//			printf("%d %d\n", input, input / (bound[iter] - bound[iter-1]));
 			return input / (bound[iter] - bound[iter-1]);
 		}
 	}
 }
-//int decuqi(int, int *);
+int decuqi(int label, int *reco) {
+//	printf("%d %d\n", label, reco[label]);
+	return reco[label];
+}
 void stuffit(int lable, int numbits, struct Queue **code_write, int end_flag) {
 	unsigned char buffer;
 	buffer = (unsigned char) lable;
@@ -147,7 +176,38 @@ void stuffit(int lable, int numbits, struct Queue **code_write, int end_flag) {
 //int vqencode( int *, int **,  int, int,float *);
 ///* vqencode(input,codebook,codebook_size,dimension,&distortion)
 //returns the index in the codebook of the closest codeword */
-//void unstuff(int , FILE *, int *, int *);
+void unstuff(int numbits, struct Queue **code_read, int *buffer, int *count) {
+	unsigned char temp[1];
+	int i;
+	int iter = 0;
+	
+	while ((*code_read)->size > 0) {
+		temp[0] &= 0x00;
+		for (i=0; i<numbits; ++i) {
+			if (Front(&(*code_read)->front) == '1') {
+				temp[0] ^= 0x01;
+			}
+			
+			if (i != numbits-1) {
+				temp[0] <<= 1;
+			}
+			
+//			printf("%d ", temp[0]);
+			
+			Dequeue(&(*code_read)->front, &(*code_read)->rear);
+			(*code_read)->size--;
+		}
+//		printf("%d\n", temp[0]);
+		buffer[iter++] = (int) temp[0];
+		
+//		printf("%d\n",(*code_read)->size);
+	}
+//	printf("%d", iter);
+	*count = iter;
+	
+	return;
+}
+//void unstuff(int , FILE **, int *, int *);
 //int readau(char filename[], short aufile[]);
 //int get_file_size(char [], int *);
 //float predictor(int ,int ,float [],float [], float *);
