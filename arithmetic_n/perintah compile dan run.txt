@@ -1,0 +1,33 @@
+main-c data/alice29.txt compressed_data/sena.img.arith_n
+main-c data/asyoulik.txt compressed_data/sena.img.arith_n
+main-c data/cp.html compressed_data/sena.img.arith_n
+main-c data/fields.c compressed_data/sena.img.arith_n
+main-c data/grammar.lsp compressed_data/sena.img.arith_n
+main-c data/kennedy.xls compressed_data/sena.img.arith_n
+main-c data/lcet10.txt compressed_data/sena.img.arith_n
+main-c data/plrabn12.txt compressed_data/sena.img.arith_n
+main-c data/ptt5 compressed_data/sena.img.arith_n
+main-c data/sum compressed_data/sena.img.arith_n
+main-c data/xargs.1 compressed_data/sena.img.arith_n
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+main-e compressed_files/berk.raw.arith_n original_files/berk.raw
+
+
+
+
+
