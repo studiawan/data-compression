@@ -53,7 +53,7 @@ void flush_arithmetic_encoder();
 int get_current_count();
 void initialize_arithmetic_decoder();
 void remove_symbol_from_stream();
-#endif 
+#endif
 
 
 #define END_OF_STREAM 256
@@ -71,11 +71,11 @@ char *Usage = "in-file out-file\n\n";
 * exit. Note that an extra two bytes are output. When decoding an
 * arithmetic stream, we have to read in extra bits. The decoding process
 * takes place in the msb of the low and high range ints, so when we are
-* decoding our last bit we will still have to have at least 15 junk 
+* decoding our last bit we will still have to have at least 15 junk
 * bits loaded into the registers. The extra two bytes account for
 * that.
 */
-void CompressFile( input, output, argc, argv );
+void CompressFile( input, output, argc, argv )
 FILE * input;
 BIT_FILE *output;
 int argc;
@@ -130,8 +130,16 @@ char *argv[];
 	 break;
 	 remove_symbol_from_stream( input, &s );
 	 putc( (char) c, output );
+<<<<<<< HEAD
 	 } 
 	 while ( argc-- > 0 ) { printf( "Argument tidak terpakai : %s\n", *argv ); argv++; }
+=======
+	 }
+	 while ( argc-- > 0 ) {
+	 printf( "Unused argument: %s\n", *argv );
+	 argv++;
+	 }
+>>>>>>> f361234523558e1a596319a62c23db943af5d619
 }
 
 
@@ -255,7 +263,7 @@ unsigned char scaled_counts[];
 * This means that I store runs of counts, until all the non-zero
 * counts have been stored. At this time the list is terminated by
 * storing a start value of 0. Note that at least 1 run of counts has
-* to be stored, so even if the first start value is 0, I read it in. 
+* to be stored, so even if the first start value is 0, I read it in.
 * It also means that even in an empty file that has no counts, I have
 * to pass at least one count.
 *
@@ -322,7 +330,7 @@ unsigned char scaled_counts[];
 	 (int) scaled_counts[ i ] )
 	 fatal_error( "Error writing byte counts\n" );
 	 }
-	 } 
+	 }
 	 if ( putc( 0, output ) != 0 )
 	 fatal_error( "Error writing byte counts\n" );
 }
@@ -363,7 +371,7 @@ FILE *input;
  fatal_error( "Error reading byte counts\n" );
  }
  build_totals( scaled_counts );
-} 
+}
 
 
 /*
@@ -385,7 +393,7 @@ long underflow_bits; /* Number of underflow bits pending */
 * The high register is initialized to all 1s, and it is assumed that
 * it has an infinite string of 1s to be shifted into the lower bit
 * positions when needed.
-*/ 
+*/
 void initialize_arithmetic_encoder() {
  low = 0;
  high = 0xffff;
@@ -455,7 +463,7 @@ SYMBOL *s;
 
 
 
-/* 
+/*
 * This routine is called to encode a symbol. The symbol is passed
 * in the SYMBOL structure as a low count, a high count, and a range,
 * instead of the more conventional probability ranges. The encoding
@@ -528,7 +536,7 @@ SYMBOL *s;
 *
 * code = count / s->scale
 */
-int get_current_count( s ) 
+int get_current_count( s )
 SYMBOL *s;
 {
 	 long range;
@@ -586,8 +594,13 @@ SYMBOL *s;
 /*
 * Next, any possible bits are shipped out.
 */
+<<<<<<< HEAD
 	
+    for ( ; ; ){
+=======
 
+    for( ; ; ){
+>>>>>>> f361234523558e1a596319a62c23db943af5d619
 
 /*
 * If the MSDigits match, the bits will be shifted out.
@@ -600,16 +613,16 @@ SYMBOL *s;
 * Else, if underflow is threatening, shift out the 2nd MSDigit.
 */
 	 else if ((low & 0x4000) == 0x4000 && (high & 0x4000) == 0 ) {
-	 code ^= 0x4000; 
+	 code ^= 0x4000;
 	 low &= 0x3ffff;
 	 high |= 0x4000;
-	 } else{
+	 } else
 
 
 /*
 * Otherwise, nothing can be shifted out, so I return.
 */
-	 return;
+        return;
 	 low <<= 1;
 	 high <<= 1;
 	 high |= 1;
