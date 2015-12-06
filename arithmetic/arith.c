@@ -75,7 +75,7 @@ char *Usage = "in-file out-file\n\n";
 * bits loaded into the registers. The extra two bytes account for
 * that.
 */
-void CompressFile( input, output, argc, argv );
+void CompressFile( input, output, argc, argv )
 FILE * input;
 BIT_FILE *output;
 int argc;
@@ -587,7 +587,7 @@ SYMBOL *s;
 * Next, any possible bits are shipped out.
 */
 	
-
+    for ( ; ; ){
 
 /*
 * If the MSDigits match, the bits will be shifted out.
@@ -603,13 +603,13 @@ SYMBOL *s;
 	 code ^= 0x4000; 
 	 low &= 0x3ffff;
 	 high |= 0x4000;
-	 } else{
+	 } else
 
 
 /*
 * Otherwise, nothing can be shifted out, so I return.
 */
-	 return;
+        return;
 	 low <<= 1;
 	 high <<= 1;
 	 high |= 1;
