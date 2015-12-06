@@ -6,7 +6,7 @@
 /**
  *  Author  : K. Sayood
  *  Modified: Djuned Fernando Djusdek - 5112.100.071
- *  Last mod: 12/5/15
+ *  Last mod: 12/6/15
  */
 
 struct Queue {
@@ -17,6 +17,7 @@ struct Queue {
 };
 
 void write_to_file(FILE **, struct Queue **);
+double get_ratio(FILE **, FILE **);
 
 //float ent(float [], int );
 int image_size(char [], int *, int *);
