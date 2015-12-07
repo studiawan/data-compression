@@ -63,6 +63,7 @@ void initialize_arithmetic_encoder();
 void encode_symbol();
 void flush_arithmetic_encoder();
 short int get_current_count();
+void  initialize_arithmetic_encoder();
 #endif
 char *CompressionName = "Adaptive order n model with arithmetic coding";
 char *Usage = "in-file out-file [ -o order ]\n\n";
@@ -84,11 +85,7 @@ int max_order = 3;
 * However, the FLUSH and DONE symbols drop back to the order -2 model.
 *
 */
-void CompressFile( input, output, argc, argv )
-FILE *input;
-BIT_FILE *output;
-int argc;
-char *argv[];
+void CompressFile(FILE *input,BIT_FILE *output,int argc,char *argv[])
 {
  SYMBOL s;
  int c;
@@ -100,22 +97,22 @@ char *argv[];
  initialize_arithmetic_encoder();
  for ( ; ; ) {
  if ( ( ++text_count & 0x0ff ) == 0 )
- flush = check_compression( input, output );
+ 	flush = check_compression( input, output );
  if ( !flush )
- c = getc( input );
+ 	c = getc( input );
  else
- c = FLUSH;
+ 	c = FLUSH;
  if ( c == EOF )
- c = DONE;
+ 	c = DONE;
  do {
- escaped = convert_int_to_symbol( c, &s);
- encode_symbol( output, &s );
+	 escaped = convert_int_to_symbol( c, &s);
+	 encode_symbol( output, &s );
  } while ( escaped );
  if ( c == DONE )
- break;
+ 	break;
  if ( c == FLUSH ) {
- flush_model();
- flush = 0;
+	 flush_model();
+	 flush = 0;
  }
  update_model( c );
  add_character_to_model( c );
@@ -134,11 +131,7 @@ char *argv[];
 * and the program exits.
 *
 */
-void ExpandFile( input, output, argc, argv )
-BIT_FILE *input; 
-FILE *output;
-int argc;
-char *argv[];
+void ExpandFile(BIT_FILE *input,FILE *output,int argc,char *argv[])
 {
  SYMBOL s;
  int c;
@@ -147,20 +140,20 @@ char *argv[];
  initialize_model();
  initialize_arithmetic_decoder( input );
  for ( ; ; ) {
- do {
- get_symbol_scale( &s );
- count = get_current_count( &s );
- c = convert_symbol_to_int( count, &s );
- remove_symbol_from_stream( input, &s );
- } while ( c == ESCAPE );
- if ( c == DONE )
- break;
- if ( c != FLUSH )
- putc( (char) c, output );
- else
- flush_model();
- update_model( c );
- add_character_to_model( c );
+	 do {
+	 get_symbol_scale( &s );
+	 count = get_current_count( &s );
+	 c = convert_symbol_to_int( count, &s );
+	 remove_symbol_from_stream( input, &s );
+	 } while ( c == ESCAPE );
+	 if ( c == DONE )
+	 	break;
+	 if ( c != FLUSH )
+	 	putc( (char) c, output );
+	 else
+	 	flush_model();
+	 update_model( c );
+	 add_character_to_model( c );
  }
 }
 /*
@@ -170,6 +163,7 @@ char *argv[];
 void initialize_options(int argc,char *argv[])
 {
  while ( argc-- > 0 ) {
+<<<<<<< HEAD
  		if ( strcmp( *argv, "-o" ) == 0 ) {
  			argc--;
  			max_order = atoi( *++argv );
@@ -180,6 +174,17 @@ void initialize_options(int argc,char *argv[])
  			argv++;
  		}
 	}
+=======
+ 	if ( strcmp( *argv, "-o" ) == 0 ) {
+ 		argc--;
+ 		max_order = atoi( *++argv );
+ 	} else
+ 		printf( "Uknown argument on command line: %s\n", *argv );
+ argc--;
+ argv++;
+ }
+}
+>>>>>>> 03cbd381c9ce4279a4eba67bfb98b1aaae8ddb98
 /*
 * This routine is called once every 256 input symbols. Its job is to
 * check to see if the compression ratio falls below 10%. If the
@@ -188,9 +193,7 @@ void initialize_options(int argc,char *argv[])
 * model to allow for more current statistics to have greater impact.
 * This heuristic approach does seem to have some effect.
 */
-int check_compression( input, output )
-FILE *input;
-BIT_FILE *output;
+int check_compression(FILE *input,BIT_FILE *output)
 {
  static long local_input_marker = 0L;
  static long local_output_marker = 0L; 
@@ -201,9 +204,8 @@ BIT_FILE *output;
  total_output_bytes = ftell( output->file );
  total_output_bytes -= local_output_marker;
  if ( total_output_bytes == 0 )
- total_output_bytes = 1;
- local_ratio = (int)( ( total_output_bytes * 100 ) /
- total_input_bytes );
+ 	total_output_bytes = 1;
+ local_ratio = (int)( ( total_output_bytes * 100 ) /total_input_bytes );
  local_input_marker = ftell( input );
  local_output_marker = ftell( output->file );
  return( local_ratio > 90 );
@@ -341,6 +343,7 @@ void initialize_model()
  CONTEXT *control_table;
  current_order = max_order;
  contexts = (CONTEXT **) calloc( sizeof( CONTEXT * ), 10 );
+<<<<<<< HEAD
  
  if ( contexts == NULL ) {
  	fatal_error( "Failure #1: allocating context table!" );
@@ -358,28 +361,41 @@ if ( null_table == NULL ){
  for ( i = 0 ; i <= max_order ; i++ ) contexts[ i ] = allocate_next_order_table( contexts[ i-1 ], 0, contexts[ i-1 ] );
  free( (char *) null_table->stats );
  null_table->stats =  (STATS *) calloc( sizeof( STATS ), 256 );
+=======
+ if ( contexts == NULL )
+ fatal_error( "Failure #1: allocating context table!" );
+ contexts += 2;
+ null_table = (CONTEXT *) calloc( sizeof( CONTEXT ), 1 );
+ if ( null_table == NULL )
+ 	fatal_error( "Failure #2: allocating null table!" );
+ null_table->max_index = -1;
+ contexts[ -1 ] = null_table;
+ for ( i = 0 ; i <= max_order ; i++ )
+ contexts[ i ] = allocate_next_order_table( contexts[ i-1 ], 0,contexts[ i-1 ] );
+ free( (char *) null_table->stats );
+ null_table->stats =(STATS *) calloc( sizeof( STATS ), 256 );
+>>>>>>> 03cbd381c9ce4279a4eba67bfb98b1aaae8ddb98
  if ( null_table->stats == NULL )
- fatal_error( "Failure #3: allocating null table!" );
+ 	fatal_error( "Failure #3: allocating null table!" );
  null_table->max_index = 255;
  for ( i=0 ; i < 256 ; i++ ) {
- null_table->stats[ i ].symbol = (unsigned char) i;
- null_table->stats[ i ].counts = 1;
+	 null_table->stats[ i ].symbol = (unsigned char) i;
+	 null_table->stats[ i ].counts = 1;
  }
  control_table = (CONTEXT *) calloc( sizeof(CONTEXT), 1 );
  if ( control_table == NULL )
- fatal_error( "Failure #4: allocating null table!" );
- control_table->stats =
- (STATS *) calloc( sizeof( STATS ), 2 );
+ 	fatal_error( "Failure #4: allocating null table!" );
+ control_table->stats =  (STATS *) calloc( sizeof( STATS ), 2 );
  if ( control_table->stats == NULL )
- fatal_error( "Failure #5: allocating null table!" );
+ 	fatal_error( "Failure #5: allocating null table!" );
  contexts[ -2 ] = control_table;
  control_table->max_index = 1;
  control_table->stats[ 0 ].symbol = -FLUSH; 
  control_table->stats[ 0 ].counts = 1;
- control_table->stats[ 1 ].symbol =– DONE;
+ control_table->stats[ 1 ].symbol =- DONE;
  control_table->stats[ 1 ].counts = 1;
  for ( i = 0 ; i < 256 ; i++ )
- scoreboard[ i ] = 0;
+ 	scoreboard[ i ] = 0;
 }
 /*
 * This is a utility routine used to create new tables when a new
@@ -405,34 +421,34 @@ CONTEXT *lesser_context;
  int i;
  unsigned int new_size;
  for ( i = 0 ; i <= table->max_index ; i++ )
- if (table->stats[ i ].symbol == (unsigned char) symbol )
- break;
- if ( i > table->max_index ) {
- table->max_index++;
- new_size = sizeof( LINKS );
- new_size *= table->max_index + 1;
- if ( table->links == NULL )
- table->links = (LINKS *) calloc( new_size, 1 );
- else
- table->links = (LINKS *)
- realloc( (char *) table->links, new_size );
- new_size = sizeof( STATS );
- new_size *= table->max_index + 1;
- if ( table->stats == NULL )
- table->stats = (STATS *) calloc( new_size, 1 );
- else
- table->stats = (STATS *)
- realloc( (char *) table->stats, new_size );
- if ( table->links == NULL )
- fatal_error( "Failure #6: allocating new table" );
- if ( table->stats == NULL )
- fatal_error( "Failure #7: allocating new table" );
- table->stats[ i ].symbol = (unsigned char) symbol;
- table->stats[ i ].counts = 0;
- }
+ 	if (table->stats[ i ].symbol == (unsigned char) symbol )
+ 		break;
+ 	if ( i > table->max_index ) {
+		 table->max_index++;
+		 new_size = sizeof( LINKS );
+		 new_size *= table->max_index + 1;
+		 if ( table->links == NULL )
+		 	table->links = (LINKS *) calloc( new_size, 1 );
+		 else
+		 	table->links = (LINKS *)
+		 realloc( (char *) table->links, new_size );
+		 new_size = sizeof( STATS );
+		 new_size *= table->max_index + 1;
+		 if ( table->stats == NULL )
+			 table->stats = (STATS *) calloc( new_size, 1 );
+		 else
+		 	table->stats = (STATS *)
+		 realloc( (char *) table->stats, new_size );
+		 if ( table->links == NULL )
+		 	fatal_error( "Failure #6: allocating new table" );
+		 if ( table->stats == NULL )
+		 	fatal_error( "Failure #7: allocating new table" );
+		 table->stats[ i ].symbol = (unsigned char) symbol;
+ 		 table->stats[ i ].counts = 0;
+ 	}
  new_table = (CONTEXT *) calloc(sizeof( CONTEXT ), 1 );
  if ( new_table == NULL )
- fatal_error( "Failure #8: allocating new table" );
+ 	fatal_error( "Failure #8: allocating new table" );
  new_table->max_index = -1;
  table->links[ i ].next = new_table; 
  new_table->lesser_context = lesser_context;
@@ -450,25 +466,24 @@ CONTEXT *lesser_context;
 * To disable update exclusion, the loop would be changed to run
 * from 0 to max_order, instead of current_order to max_order.
 */
-void update_model( symbol )
-int symbol;
+void update_model(int symbol)
 {
  int i;
  int local_order;
  if ( current_order < 0 )
- local_order = 0;
+ 	local_order = 0;
  else
- local_order = current_order;
+ 	local_order = current_order;
  if ( symbol >= 0 ) {
- while ( local_order <= max_order ) {
- if ( symbol >= 0 )
- update_table( contexts[ local_order ], symbol );
- local_order++;
- }
+	 while ( local_order <= max_order ) {
+	 	if ( symbol >= 0 )
+	 		update_table( contexts[ local_order ], symbol );
+	 	local_order++;
+	 }
  }
  current_order = max_order;
  for ( i = 0 ; i < 256 ; i++ )
- scoreboard[ i ] = 0;
+ 	scoreboard[ i ] = 0;
 }
 /*
 * This routine is called to update the count for a particular symbol
@@ -485,9 +500,7 @@ int symbol;
 * bytes, if the count reaches 255, the table absolutely must be rescaled
 * to get the counts back down to a reasonable level.
 */
-void update_table( table, symbol )
-CONTEXT *table;
-int symbol;
+void update_table(CONTEXT *table,int symbol)
 {
  int i;
  int index;
@@ -499,52 +512,50 @@ int symbol;
 * symbol in the table is the most active, so start there.
 */
  index = 0;
- while ( index <= table->max_index &&
- table->stats[index].symbol != (unsigned char) symbol )
- index++;
+ while ( index <= table->max_index && table->stats[index].symbol != (unsigned char) symbol )
+ 	index++;
  if ( index > table->max_index ) {
- table->max_index++;
- new_size = sizeof( LINKS );
- new_size *= table->max_index + 1;
- if ( current_order < max_order ) {
- if ( table->max_index == 0 )
- table->links - (LINKS *) calloc( new_size, 1 );
- else
- table->links = (LINKS *)
- realloc( (char *) table->links, new_size );
- if ( table->links == NULL )
- fatal_error( "Error #9: reallocating table space!" );
- table->links[ index ].next = NULL;
- }
- new_size = sizeof( STATS );
- new_size *= table->max_index + 1;
- if (table->max_index==0)
- table->stats = (STATS *) calloc( new_size, 1 );
- else
- table->stats = (STATS *)
- realloc( (char *) table->stats, new_size );
- if ( table->stats == NULL )
- fatal_error( "Error #10: reallocating table space!" );
- table->stats[ index ].symbol = (unsigned char) symbol;
- table->stats[ index ].counts = 0;
+	 table->max_index++;
+	 new_size = sizeof( LINKS );
+	 new_size *= table->max_index + 1;
+	 if ( current_order < max_order ) {
+		 if ( table->max_index == 0 )
+		 	table->links = (LINKS *) calloc( new_size, 1 );
+		 else
+		 	table->links = (LINKS *)
+		 realloc( (char *) table->links, new_size );
+		 if ( table->links == NULL )
+		 	fatal_error( "Error #9: reallocating table space!" );
+		 table->links[ index ].next = NULL;
+ 		}
+	 new_size = sizeof( STATS );
+	 new_size *= table->max_index + 1;
+	 if (table->max_index==0)
+	 	table->stats = (STATS *) calloc( new_size, 1 );
+	 else
+	 	table->stats = (STATS *)
+	 realloc( (char *) table->stats, new_size );
+	 if ( table->stats == NULL )
+	 	fatal_error( "Error #10: reallocating table space!" );
+	 table->stats[ index ].symbol = (unsigned char) symbol;
+	 table->stats[ index ].counts = 0;
  }
 /*
 * Now I move the symbol to the front of its list.
 */
  i = index;
- while ( i > 0 &&
- table->stats[ index ]. counts == table->stats[ i-1 ].counts )
- i--;
+ while ( i > 0 &&table->stats[ index ]. counts == table->stats[ i-1 ].counts )
+ 	i--;
  if ( i != index ) {
- temp = table->stats[ index ].symbol;
- table->stats[ index ].symbol = table->stats[ i ].symbol;
- table->stats[ i ].symbol = temp;
- if ( table->links != NULL ) {
- temp_ptr = table->links[ index ].next;
- table->links[ index ].next = table->links[ i ].next;
- table->links[ i ].next = temp_ptr;
- }
- index = 1;
+	 temp = table->stats[ index ].symbol;
+	 table->stats[ index ].symbol = table->stats[ i ].symbol;
+	 table->stats[ i ].symbol = temp;
+	 if ( table->links != NULL ) {
+		 temp_ptr = table->links[ index ].next;
+		 table->links[ index ].next = table->links[ i ].next;
+		 table->links[ i ].next = temp_ptr;
+	 }
+	 index = 1;
  }
 /*
 * The switch has been performed, now I can update the counts
@@ -568,29 +579,27 @@ int symbol;
 * instead of unsigned chars. This insures that no match will ever
 * be found for the EOF or FLUSH symbols in any "normal" table.
 */
-int convert_int_to_symbol( c, s )
-int c;
-SYMBOL *s;
+int convert_int_to_symbol(int c,SYMBOL *s)
 {
  int i;
  CONTEXT *table;
  table = contexts[ current_order ];
  totalize_table( table );
  s->scale = totals[ 0 ];
- if ( current_order == –2 )
- c = -c;
+ if ( current_order == -2 )
+ 	c = -c;
  for ( i = 0 ; i <= table->max_index ; i++ ) {
- if ( c == (int) table->stats[ i ].symbol ) {
- if ( table->stats[ i ].counts == 0 )
- break;
- s->low_count = totals[ i+2 ];
- s->high_count = totals[ i+1 ];
- return( 0 );
- }
+	 if ( c == (int) table->stats[ i ].symbol ) {
+	 	if ( table->stats[ i ].counts == 0 )
+	 		break;
+		 s->low_count = totals[ i+2 ];
+		 s->high_count = totals[ i+1 ];
+		 return( 0 );
+ 	}
  }
  s->low_count = totals[ 1 ];
- s->high-count = totals[ 0 ];
- current_order––;
+ s->high_count = totals[ 0 ];
+ current_order--;
  return( 1 );
 }
 /*
@@ -600,8 +609,7 @@ SYMBOL *s;
 * table, then building the totals table. Once that is done, the
 * cumulative total table has the symbol scale at element 0.
 */
-void get_symbol_scale( s)
-SYMBOL *s;
+void get_symbol_scale(SYMBOL *s)
 {
  CONTEXT *table;
  table = contexts[ current_order ];
@@ -623,25 +631,23 @@ SYMBOL *s;
 * the negative of the symbol so it isn't confused with a normal
 * symbol.
 */
-int convert_symbol_to_int( count, s )
-int count;
-SYMBOL *s;
+int convert_symbol_to_int(int count,SYMBOL *s)
 {
+	printf("halo\n");
  int c;
  CONTEXT *table;
- table - contexts[ current_order ];
- for ( c = 0; count < totals[ c ] ; c++ )
- ;
+ table = contexts[ current_order ];
+ for ( c = 0; count < totals[ c ] ; c++ );
  s->high_count = totals[ c - 1 ];
- s->low_count = totals[ c ]:
+ s->low_count = totals[ c ];
  if ( c == 1 ) {
- current_order––;
- return( ESCAPE );
+	 current_order--;
+	 return( ESCAPE );
  }
  if ( current_order < -1 )
- return( (int) -table->stats[ c-2 ].symbol );
+ 	return( (int) -table->stats[ c-2 ].symbol );
  else
- return( table->stats[ c-2 ].symbol );
+ 	return( table->stats[ c-2 ].symbol );
 }
 /*
 * After the model has been updated for a new character, this routine
@@ -657,16 +663,14 @@ SYMBOL *s;
 * the pointers to "CD" and "C". The hard work was done in
 * shift_to_context().
 */
-void add_character_to_model( c )
-int c;
+void add_character_to_model(int c)
 {
  int i;
  if ( max_order < 0 || c < 0 )
- return;
- contexts[ max_order ] =
- shift_to_next_context( contexts[ max_order ], c, max_order );
- for ( i = max_order-1 ; i > 0 ; i–– )
- contexts[ i ] = contexts[ i+1 ]->lesser_context;
+ 	return;
+ contexts[ max_order ] = shift_to_next_context( contexts[ max_order ], c, max_order );
+ for ( i = max_order-1 ; i > 0 ; i-- )
+ 	contexts[ i ] = contexts[ i+1 ]->lesser_context;
 }
 /*
 * This routine is called when adding a new character to the model. From
@@ -694,10 +698,7 @@ int c;
 * This is the most complicated part of the modeling program, but it is
 * necessary for performance reasons.
 */
-CONTEXT *shift_to_next_context( table, c, order )
-CONTEXT *table;
-int c;
-int order;
+CONTEXT *shift_to_next_context(CONTEXT *table,int c,int order)
 {
  int i;
  CONTEXT *new_lesser;
@@ -712,13 +713,13 @@ int order;
 */
  table = table->lesser_context;
  if ( order == 0 )
- return( table->links[ 0 ].next );
+ 	return( table->links[ 0 ].next );
  for ( i = 0 ; i <= table->max_index ; i++ )
- if ( table->stats[ i ].symbol == (unsigned char) c )
- if ( table->links[ i ].next != NULL)
- return( table->links[ i ].next );
- else
- break;
+ 	if ( table->stats[ i ].symbol == (unsigned char) c )
+ 		if ( table->links[ i ].next != NULL)
+			return( table->links[ i ].next );
+ 		else
+ 			break;
 /*
 * If I get here, it means the new context did not exist. I have to
 * create the new context, add a link to it here, and add the backwards
@@ -748,29 +749,26 @@ int order;
 * stats table, but only if this is a leaf context. Otherwise, we
 * might cut a link to a higher order table.
 */
-void rescale_table( table )
-CONTEXT *table;
+void rescale_table(CONTEXT *table)
 {
  int i;
  if ( table->max_index == -1 )
- return;
+ 	return;
  for ( i = 0 ; i <= table->max_index ; i ++ )
- table->stats[ i ].counts /= 2;
- if ( table->stats[ table]>max_index ].counts == 0 &&
- table->links == NULL ) {
- while ( table->stats[ table->max_index ].counts == 0 &&
- table->max_index >= 0 )
- table->max_index––;
+ 	table->stats[ i ].counts /= 2;
+ if ( table->stats[ table->max_index ].counts == 0 && table->links == NULL ) {
+ while ( table->stats[ table->max_index ].counts == 0 && table->max_index >= 0 )
+ 	table->max_index--;
  if ( table->max_index == -1 ) {
- free( (char *) table->stats );
- table->stats = NULL;
- } else {
- table->stats = (STATS *)
- realloc( (char *) table->stats,
- sizeof( STATS ) * ( table->max_index + 1 ) );
- if ( table->stats == NULL )
- fatal_error( "Error #11: reallocating stats space!" );
- }
+	 free( (char *) table->stats );
+	 table->stats = NULL;
+	 } else {
+		 table->stats = (STATS *)
+		 realloc( (char *) table->stats,
+		 sizeof( STATS ) * ( table->max_index + 1 ) );
+		 if ( table->stats == NULL )
+		 	fatal_error( "Error #11: reallocating stats space!" );
+	}
  }
 }
 /*
@@ -785,44 +783,42 @@ CONTEXT *table;
 * allows us to exclude counts of symbols that have already appeared in
 * higher order contexts, improving compression quite a bit.
 */
-void totalize_table( table )
-CONTEXT *table;
+void totalize_table(CONTEXT *table)
 {
  int i;
  unsigned char max;
  for ( ; ; ) {
- max = 0;
- i = table->max_index + 2;
- totals[ i ] = 0;
- for ( ; i > 1 ; i- ) {
- totals[ i-1 ] = totals[ i ];
- if ( table->stats[ i-2 ].counts )
- if ( ( current_order == -2 ) || 
- scoreboard[ table->stats[ i-2 ].symbol ] == 0 )
- totals[ i-1 ] += table->stats[ i-2].counts;
- if ( table->stats[ i-2 ].counts > max )
- max = table->stats[ i-2 ].counts;
- }
+	 max = 0;
+	 i = table->max_index + 2;
+	 totals[ i ] = 0;
+	 for ( ; i > 1 ; i-- ) {
+	 totals[ i-1 ] = totals[ i ];
+	 if ( table->stats[ i-2 ].counts )
+		 if ( ( current_order == -2 ) || scoreboard[ table->stats[ i-2 ].symbol ] == 0 )
+	 		totals[ i-1 ] += table->stats[ i-2].counts;
+	 if ( table->stats[ i-2 ].counts > max )
+		 max = table->stats[ i-2 ].counts;
+	}
 /*
 * Here is where the escape calculation needs to take place.
 */
  if ( max == 0 )
- totals[ 0 ] = 1;
+ 	totals[ 0 ] = 1;
  else {
- totals[ 0 ] = (short int) ( 256 - table->max_index );
- totals[ 0 ] *= table->max_index;
- totals[ 0 ] /= 256;
- totals[ 0 ] /= max;
- totals[ 0 ]++;
- totals[ 0 ] += totals[ 1 ];
+	 totals[ 0 ] = (short int) ( 256 - table->max_index );
+	 totals[ 0 ] *= table->max_index;
+	 totals[ 0 ] /= 256;
+	 totals[ 0 ] /= max;
+	 totals[ 0 ]++;
+	 totals[ 0 ] += totals[ 1 ];
  }
  if ( totals[ 0 ] < MAXIMUM_SCALE )
- break;
+ 	break;
  rescale_table( table );
  }
  for ( i = 0 ; i < table->max_index ; i++ )
- if (table->stats[i].counts != 0)
- scoreboard[ table->stats[ i ].symbol ] = 1;
+ 	if (table->stats[i].counts != 0)
+ 		scoreboard[ table->stats[ i ].symbol ] = 1;
 }
 /*
 * This routine is called when the entire model is to be flushed.
@@ -832,14 +828,13 @@ CONTEXT *table;
 * rescale every table in its list of links. The table itself
 * is then rescaled.
 */
-void recursive_flush( table )
-CONTEXT *table;
+void recursive_flush(CONTEXT *table)
 {
  int i;
  if ( table->links != NULL )
- for ( i = 0 ; i <= table->max_index ; i++ )
+ 	for ( i = 0 ; i <= table->max_index ; i++ )
  if ( table->links[ i ].next != NULL )
- recursive_flush( table->links[ i ].next );
+ 	recursive_flush( table->links[ i ].next );
  rescale_table( table );
 }
 /*
@@ -855,8 +850,7 @@ void flush_model()
 /*
 * Everything from here down define the arithmetic coder section
 * of the program.
-*/ 
-*/
+
 * These four variables define the current state of the arithmetic
 * coder/decoder. They are assumed to be 16 bits long. Note that
 * by declaring them as short ints, they will actually be 16 bits
@@ -884,8 +878,7 @@ void initialize_arithmetic_encoder()
 * bits left in the high and low registers. We output two bits,
 * plus as many underflow bits as are necessary.
 */
-void flush_arithmetic_encoder( stream )
-BIT_FILE *stream;
+void flush_arithmetic_encoder(BIT_FILE *stream)
 {
  OutputBit( stream, low & 0x4000 );
  underflow_bits++;
@@ -903,19 +896,15 @@ BIT_FILE *stream;
 * the output stream. Finally, high and low are stable again and
 * the routine returns.
 */
-void encode_symbol( stream, s )
-BIT_FILE *stream;
-SYMBOL *s;
+void encode_symbol(BIT_FILE *stream,SYMBOL *s)
 {
  long range;
 /*
 * These three lines rescale high and low for the new symbol.
 */
  range = (long) ( high-low ) + 1;
- high = low + (unsigned short int) 
- (( range * s->high_count ) / s->scale -1 );
- low = low + (unsigned short int)
- (( range * s->low_count ) / s->scale );
+ high = low + (unsigned short int) (( range * s->high_count ) / s->scale -1 );
+ low = low + (unsigned short int)(( range * s->low_count ) / s->scale );
 /*
 * This loop turns out new bits until high and low are far enough
 * apart to have stabilized.
@@ -926,22 +915,22 @@ SYMBOL *s;
 * be sent to the output stream.
 */
  if ( ( high & 0x8000 ) == ( low & 0x8000 ) ) {
- OutputBit( stream, high & 0x8000 );
- while ( underflow_bits > 0 ) {
- OutputBit( stream, ~high & 0x8000 );
- underflow_bits--;
- }
+	 OutputBit( stream, high & 0x8000 );
+	 while ( underflow_bits > 0 ) {
+		 OutputBit( stream, ~high & 0x8000 );
+		 underflow_bits--;
+ 	 }
  }
 /*
 * If this test passes, the numbers are in danger of underflow, because
 * the MSDigits don't match, and the 2nd digits are just one apart.
 */
  else if ( ( low & 0x4000 ) && !( high & 0x4000 )) {
- underflow_bits += 1;
- low &= 0x3fff;
- high |= 0x4000;
- } else
- return ;
+	 underflow_bits += 1;
+	 low &= 0x3fff;
+	 high |= 0x4000;
+	 } else
+ 		return ;
  low <<= 1;
  high <<= 1;
  high |= 1;
@@ -955,14 +944,12 @@ SYMBOL *s;
 *
 * code = count / s->scale
 */
-short int get_current_count( s )
-SYMBOL *s;
+short int get_current_count(SYMBOL *s)
 {
  long range;
  short int count;
  range = (long) ( high - low ) + 1;
- count = (short int)
- ((((long) ( code - low ) + 1 ) * s->scale-1 ) / range );
+ count = (short int) ((((long) ( code - low ) + 1 ) * s->scale-1 ) / range );
  return( count );
 }
 /*
@@ -971,14 +958,13 @@ SYMBOL *s;
 * to their conventional starting values, plus reading the first 
 * 16 bits from the input stream into the code value.
 */
-void initialize_arithmetic_decoder( stream )
-BIT_FILE *stream;
+void initialize_arithmetic_decoder(BIT_FILE *stream)
 {
  int i;
  code = 0;
  for ( i = 0 ; i < 16 ; i++ ) {
- code <<= 1;
- code += InputBit( stream );
+	 code <<= 1;
+	 code += InputBit( stream );
  }
  low = 0;
  high = 0xffff;
@@ -989,19 +975,15 @@ BIT_FILE *stream;
 * decoded, this routine has to be called to remove it from the
 * input stream.
 */
-void remove_symbol_from_stream( stream, s )
-BIT_FILE *stream;
-SYMBOL *s;
+void remove_symbol_from_stream(BIT_FILE *stream,SYMBOL *s)
 {
  long range;
 /*
 * First, the range is expanded to account for the symbol removal.
 */
  range = (long)( high - low ) + 1;
- high = low + (unsigned short int)
- (( range * s->high_count ) / s->scale -1 );
- low = low + (unsigned short int)
- (( range * s->low_count ) / s->scale );
+ high = low + (unsigned short int)(( range * s->high_count ) / s->scale -1 );
+ low = low + (unsigned short int)(( range * s->low_count ) / s->scale );
 /*
 * Next, any possible bits are shipped out.
 */
@@ -1030,4 +1012,4 @@ SYMBOL *s;
  code += InputBit( stream );
  }
 }
-/************************** End of ARITH-N.C ***************************/
+/************************** End of ARITH-N.C ***************************/ 
