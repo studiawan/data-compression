@@ -1,4 +1,5 @@
 #include "idc.h"
+#include <string.h>
 #include <stdlib.h>
 
 void value(int *values, unsigned char *image, int size,int num)
@@ -48,8 +49,6 @@ void sort(float *prob, int *loc,int num)
 
 void huff(float prob[], int loc[], int num, unsigned int *code, char *length)
 {
-    int i;
-    int sentinel = num;
     NODE *head = create_list(prob, loc, num);
     while (head->forward) {
         NODE *rightNode = head;
@@ -80,6 +79,7 @@ void huff(float prob[], int loc[], int num, unsigned int *code, char *length)
 
         if (newNode->forward == head) head = newNode;
     }
+    create_code(head, num, code, length);
     return;
 }
 
@@ -114,8 +114,77 @@ NODE* create_list(float prob[], int loc[], int num) {
     return head;
 }
 
-int files(int size,int *code,char *length,unsigned char *file)
-{
-//	return;
+void create_code(NODE *root, int lgth, unsigned int *code, char *length) {
+    NODE *temp = root;
+    unsigned int prefix = 0;
+    unsigned int mask = -2;
+    char size = 0;
+    int i;
+    while(temp) {
+        if(temp->left && temp->left->check == 0) {
+            temp = temp->left;
+            size++;
+            prefix <<= 1;
+            prefix = (prefix&mask);
+        }
+        else if(temp->right && temp->right->check == 0) {
+            temp = temp->right;
+            size++;
+            prefix <<= 1;
+            prefix = (prefix&mask);
+            prefix++;
+        }
+        else {
+            temp->check = 1;
+            size--;
+            prefix >>= 1;
+            temp = temp->parent;
+        }
+        if(temp && temp->left == NULL && temp->right == NULL) {
+            code[temp->code] = prefix;
+            length[temp->code] = size;
+        }
+    }
 }
 
+int files(int size,unsigned int *code,char *length,unsigned char *file)
+{
+    int i, j;
+    int counter = 0;
+    unsigned char byte = 0;
+    int byteSize = 0;
+    unsigned int bitSize = 0;
+
+    unsigned char mask = -2;
+
+    unsigned char *resBuffer = (unsigned char*)malloc(2*size*sizeof(unsigned char));
+
+    for(i = 0; i < size; i++)
+    {
+        for(j=length[file[i]]-1; j>=0; j--) {
+            byte <<= 1;
+            byte = byte & (mask);
+            unsigned char firstBit = ((code[file[i]] >> j) & 1);
+            byte |= firstBit;
+            counter++;
+            bitSize++;
+            if(counter == 8) {
+                resBuffer[byteSize] = byte;
+                byte = 0;
+                counter = 0;
+                byteSize++;
+            }
+        }
+    }
+    if(counter > 0) {
+        while(counter < 8) {
+            byte <<= 1;
+            byte = byte & (mask);
+            counter++;
+        }
+        resBuffer[byteSize] = byte;
+        byteSize++;
+    }
+    memcpy(file, resBuffer, byteSize);
+    return bitSize;
+}

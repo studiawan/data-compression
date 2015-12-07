@@ -30,7 +30,7 @@ void diff(int *diffs, unsigned char *image, int rows, int cols,int num, unsigned
 void getcode(FILE *fp, int num, unsigned int *code, char *length);
 void value(int *values, unsigned char *image, int size,int num);
 void images(int rows, int cols, int *code,char *length, unsigned char *file, unsigned char *dimage);
-int files(int size,int *code,char *length,unsigned char *file);
+int files(int size,unsigned int *code,char *length,unsigned char *file);
 
 /* define the structure node */
 struct node
