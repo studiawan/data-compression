@@ -7,9 +7,11 @@
 
 /**
  *  Author  : Djuned Fernando Djusdek - 5112.100.071
- *  Last mod: 12/6/15                               
+ *  modified by Ryan Nathan S 
+ *  Last mod: 12/7/15                               
  */
 
+//write file from bit array
 void write_to_file(FILE **ofp, struct Queue **code_write) {
 	unsigned char temp[1];
 	temp[0] &= 0x00;
@@ -31,6 +33,8 @@ void write_to_file(FILE **ofp, struct Queue **code_write) {
 	
 	return;
 }
+
+//calculate ratio compression
 double get_ratio(FILE **fp, FILE **ofp) {
 	int size_ori, size_com;
 	fseek(*fp, 0L, SEEK_END);
@@ -41,6 +45,8 @@ double get_ratio(FILE **fp, FILE **ofp) {
 	
 	return size_com * 100.0 / size_ori;
 }
+
+//read file into bit array
 int read_from_file(FILE **ifp, struct Queue **code_read) {
 	char temp[1];
 	temp[0] &= 0x00;
@@ -83,6 +89,8 @@ int image_size(char input_image[], int *row_size, int *col_size) {
 		return 0;
 	}
 }
+
+//get image from image file for img and y extension only
 void readimage(char input_image[], unsigned char **imgin, int row_size, int col_size) {
 	FILE *fp;
 	
@@ -110,6 +118,8 @@ void readimage(char input_image[], unsigned char **imgin, int row_size, int col_
 	
 	return;
 }
+
+//encoding uniform_quantization
 int encuqi(int input, int *bound, int numlev) {
 	int iter = 1;
 	
@@ -120,10 +130,14 @@ int encuqi(int input, int *bound, int numlev) {
 		}
 	}
 }
+
+//Decode uniform_quantiyation
 int decuqi(int label, int *reco) {
 //	printf("%d %d\n", label, reco[label]);
 	return reco[label];
 }
+
+//convert from image buffer to bit array
 void stuffit(int lable, int numbits, struct Queue **code_write, int end_flag) {
 	unsigned char buffer;
 	buffer = (unsigned char) lable;
@@ -176,6 +190,8 @@ void stuffit(int lable, int numbits, struct Queue **code_write, int end_flag) {
 //int vqencode( int *, int **,  int, int,float *);
 ///* vqencode(input,codebook,codebook_size,dimension,&distortion)
 //returns the index in the codebook of the closest codeword */
+
+//convert from bit array to image buffer
 void unstuff(int numbits, struct Queue **code_read, int *buffer, int *count) {
 	unsigned char temp[1];
 	int i;

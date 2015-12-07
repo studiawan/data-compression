@@ -107,7 +107,7 @@ void main(int argc, char **argv)
    if (numbits <= 0 || numbits >= 8) {
     fprintf(stderr,"\n You have entered values for the number of bits that\n");
     fprintf(stderr,"are not compatible.  The number of bits should between\n");
-    fprintf(stderr,"0 (zero) and 8 (eight).\n");
+    fprintf(stderr,"1 (one) - 7 (seven).\n");
     exit(1);
    }
 
