@@ -31,29 +31,29 @@ void usage(void);
 
 void main(int argc, char **argv)
 {
-	unsigned char *file,*efile; /*pointer to an array for file pointer to an array for encoded image*/
-	unsigned char w,p,n; /* place holders */
-	char infile[80], outfile[80], codefile[80]; /* input and output files*/
-	char temp [80],where,size;
-	int num,s,x,c;
-	int i,k,l,count,f; /* counters */
-	FILE *ifp,*ofp,*cfp,*tmp_fp;
-	unsigned int *code,word,d;
-	char *length,t;  /* pointer to an array for code lengths */
-	extern int optint;
-	extern char *optarg;
+    unsigned char *file,*efile; /*pointer to an array for file pointer to an array for encoded image*/
+    unsigned char w,p,n; /* place holders */
+    char infile[80], outfile[80], codefile[80]; /* input and output files*/
+    char temp [80],where,size;
+    int num,s,x,c;
+    int i,k,l,count,f; /* counters */
+    FILE *ifp,*ofp,*cfp,*tmp_fp;
+    unsigned int *code,word,d;
+    char *length,t;  /* pointer to an array for code lengths */
+    extern int optint;
+    extern char *optarg;
 
-	ifp = stdin;
-	t = 0; /* flag to see if an input filename was given */
-	ofp = stdout;
-	cfp = NULL;
-	num = 256;
-	l = 0;
-	word = 0;
+    ifp = stdin;
+    t = 0; /* flag to see if an input filename was given */
+    ofp = stdout;
+    cfp = NULL;
+    num = 256;
+    l = 0;
+    word = 0;
     n = 1 << 7; /* set highest bit equal to one */
-	size = 0;
-	f = 10000;
-	x = 0;
+    size = 0;
+    f = 10000;
+    x = 0;
 
     /* get memory */
     code = (unsigned int *)malloc(num*sizeof(unsigned int));
@@ -63,7 +63,7 @@ void main(int argc, char **argv)
     {
         printf("Unable to allocate memory for image.\n");
         exit(1);
-	}
+    }
 
     while((c = getopt(argc,argv,"i:o:c:h")) != EOF)
     {
@@ -80,80 +80,84 @@ void main(int argc, char **argv)
                 t = 1;
                 break;
 
-        /* output file */
+                /* output file */
             case 'o':
                 strcpy(outfile,optarg);
                 ofp = fopen(outfile,"wb");
                 break;
 
-        /* code file */
+                /* code file */
             case 'c':
                 strcpy(codefile,optarg);
                 cfp = fopen(optarg,"rb");
-                getcode(cfp,num,code,length);
+//                getcode(cfp,num,code,length);
                 break;
             case 'h':
                 usage();
                 exit(1);
                 break;
         }
-	}
+    }
 
     fprintf(stderr,"\t Patience -- This may take a while\n");
 
     /* get file size */
 
     /* create a temporary file for input */
-	if(t == 0)
+    if(t == 0)
     {
-		strcpy(infile,"tmpf");
-		tmp_fp = fopen(infile,"wb+");
-		while((t = getc(ifp)) != EOF)
-		{
-		    putc(t,tmp_fp);
-		}
-		fclose(tmp_fp);
+        strcpy(infile,"tmpf");
+        tmp_fp = fopen(infile,"wb+");
+        while((t = getc(ifp)) != EOF)
+        {
+            putc(t,tmp_fp);
+        }
+        fclose(tmp_fp);
         ifp = fopen(infile,"rb");
-		t = 0;
-	}
+        t = 0;
+    }
 
-	fseek(ifp,0,2); /* set file pointer at end of file */
-	s = ftell(ifp); /* gets size of file */
-	fseek(ifp,0,0); /* set file pointer to begining of file */
+    fseek(ifp,0,2); /* set file pointer at end of file */
+    s = ftell(ifp); /* gets size of file */
+    fseek(ifp,0,0); /* set file pointer to begining of file */
 
-	if(cfp == NULL)
+    unsigned int bitSize[1];
+    bitSize[0] = 0;
+    if(cfp == NULL)
     {
-		fread(code,sizeof(unsigned int),num,ifp);
-		fread(length,sizeof(char),num,ifp);
-		s = s - ftell(ifp); /* s = the size of the encoded file */
+        fread(bitSize,sizeof(unsigned int),1,ifp);
+        fread(code,sizeof(unsigned int),num,ifp);
+        fread(length,sizeof(char),num,ifp);
+        s = s - ftell(ifp); /* s = the size of the encoded file */
     }
 
     /* get memory for encoded file */
-	efile = (unsigned char *)malloc(s*sizeof(unsigned char));
+    efile = (unsigned char *)malloc(s*sizeof(unsigned char));
 
     /* get encoded file */
-	fread(efile,sizeof(unsigned char),s,ifp);
-	fclose(ifp);
+    fread(efile,sizeof(unsigned char),s,ifp);
+    fclose(ifp);
 
     /* remove temporary file if one was used */
-	if(t == 0)
+    if(t == 0)
     {
         remove("tmpf");
     }
 
     /* decode file */
-	count = 0;
-	w = *(efile+count); /* w equals encoded word */
-	++count; /* counter to keep track of which word is being decoded */
-    for( ; count < s; )
+    count = 0;
+    w = *(efile+count); /* w equals encoded word */
+    ++count; /* counter to keep track of which word is being decoded */
+    unsigned int bitReaded = 0;
+    for( ; count <= s && bitReaded < bitSize[0]; )
     {
-        for(k = 0; k < 8; k++)
+        for(k = 0; k < 8 && bitReaded < bitSize[0]; k++)
         {
             if((w & n) == n)
             {
                 /* checks bit value of encoded word */
                 ++word;
-			}
+            }
             ++size; /* counter to keep track of length of word */
 
             /* check to see if word equals a code */
@@ -167,7 +171,7 @@ void main(int argc, char **argv)
                         *(file + l) = p; /* decoded image */
                         ++l; /* counter of length of image */
                         i = num; /* ends loop */
-					}
+                    }
                     else
                     {
                         fwrite(file,sizeof(unsigned char),f,ofp);
@@ -181,16 +185,17 @@ void main(int argc, char **argv)
                     word = 0; /* reset word */
                     size = 0; /* reset size */
                 }
-			}
+            }
             word <<= 1;
             w <<= 1;
-		}
-		w = *(efile+count); /* get next encoded value */
-		++count;
-	}
-	*(file+l) = EOF;
-	fwrite(file,sizeof(unsigned char),l,ofp);
-	fclose(ofp);
+            bitReaded++;
+        }
+        w = *(efile+count); /* get next encoded value */
+        ++count;
+    }
+    *(file+l) = EOF;
+    fwrite(file,sizeof(unsigned char),l,ofp);
+    fclose(ofp);
 }
 
 void usage()

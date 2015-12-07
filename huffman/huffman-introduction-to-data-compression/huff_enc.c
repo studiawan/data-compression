@@ -32,46 +32,47 @@ void usage(void);
 
 void main(int argc, char **argv)
 {
-	unsigned char *file; /*pointer to an array for file */
-	char infile[80], outfile[80], codefile[80], scodefile[80]; /* input and output files*/
-	char temp [80],type,where,t;
-	int size,num,c;
-	int i,j,n; /* counters */
-	FILE *ifp, *ofp, *cfp, *sfp, *tmp_fp;
-	char *length,x; /*pointer to an array for code lengths*/
-	int values[256], loc[256];
-	unsigned int *code; /* pointer to an array for code */
-	float prob[256],p;
-	extern int optint;
-	extern char *optarg;
+    unsigned char *file; /*pointer to an array for file */
+    char infile[80], outfile[80], codefile[80], scodefile[80]; /* input and output files*/
+    char temp [80],type,where,t;
+    int size,num,c;
+    int i,j,n; /* counters */
+    FILE *ifp, *ofp, *cfp, *sfp, *tmp_fp;
+    char *length,x; /*pointer to an array for code lengths*/
+    int values[256], loc[256];
+    unsigned int *code; /* pointer to an array for code */
+    float prob[256],p;
+    extern int optint;
+    extern char *optarg;
 
-	ifp = stdin;
-	t = 0;  /*flag to see if an input filename was given*/
-	ofp = stdout;
-	x = 0; /* flag if output is piped to decoder */
-	cfp = NULL;
-	sfp = NULL;
-	num = 256;
+    ifp = stdin;
+    t = 0;  /*flag to see if an input filename was given*/
+    ofp = stdout;
+    x = 0; /* flag if output is piped to decoder */
+    cfp = NULL;
+    sfp = NULL;
+    num = 256;
 
     code = (unsigned int *)malloc(num*sizeof(unsigned int));
     length = (char *)malloc(num*sizeof(char));
 
-	while((c = getopt(argc,argv,"i:o:c:s:h")) != EOF)
-	{
+    while((c = getopt(argc,argv,"i:o:c:s:h")) != EOF)
+    {
         switch(c)
         {
             /* input file */
             case 'i':
-                strcpy(infile,optarg);
+                strcpy(infile, optarg);
                 if((ifp = fopen(infile,"rb")) == NULL)
                 {
+                    fprintf(stderr,"%s.\n", infile);
                     fprintf(stderr,"Image file cannot be opened for input.\n");
                     return;
                 }
                 t = 1;
                 break;
 
-            /* output file */
+                /* output file */
             case 'o':
                 strcpy(outfile,optarg);
                 if((ofp = fopen(outfile,"wb")) == NULL)
@@ -82,7 +83,7 @@ void main(int argc, char **argv)
                 x = 1;
                 break;
 
-            /* code file */
+                /* code file */
             case 'c':
                 strcpy(codefile,optarg);
                 if((cfp = fopen(codefile,"rb")) == NULL)
@@ -93,7 +94,7 @@ void main(int argc, char **argv)
                 getcode(cfp,num,code,length);
                 break;
 
-            /* file to store code in */
+                /* file to store code in */
             case 's':
                 strcpy(scodefile,optarg);
                 if((sfp = fopen(scodefile,"wb")) == NULL)
@@ -108,15 +109,15 @@ void main(int argc, char **argv)
                 exit(1);
                 break;
         }
-	}
+    }
 
     /* get size of file */
-    //	fprintf(stderr,"After getopt\n");
+    //  fprintf(stderr,"After getopt\n");
 
     /* create a temporary file for input */
-	if(t == 0)
+    if(t == 0)
     {
-		strcpy(infile,"tmpf");
+        strcpy(infile,"tmpf");
         tmp_fp = fopen(infile,"wb+");
         while((t = getc(ifp)) != EOF)
         {
@@ -124,14 +125,14 @@ void main(int argc, char **argv)
         }
         fclose(tmp_fp);
         ifp = fopen(infile,"rb");
-		t = 0;
-	}
+        t = 0;
+    }
 
-	fseek(ifp,0,2); /* set file pointer at end of file */
-	size = ftell(ifp); /* gets size of file */
+    fseek(ifp,0,2); /* set file pointer at end of file */
+    size = ftell(ifp); /* gets size of file */
 
-	//++size;	//defaultnya gini tapi hasilnya size kelebihan 1. pengaruh pas fungsi value. #karsten
-	fseek(ifp,0,0); /* set file pointer to begining of file */
+    //++size;   //defaultnya gini tapi hasilnya size kelebihan 1. pengaruh pas fungsi value. #karsten
+    fseek(ifp,0,0); /* set file pointer to begining of file */
 
     /* get memory for file */
     file = (unsigned char*)malloc(2*size*sizeof(unsigned char));
@@ -139,7 +140,7 @@ void main(int argc, char **argv)
     {
         printf("Unable to allocate memory for file.\n");
         exit(1);
-	}
+    }
 
     /* get file */
     fread(file,sizeof(unsigned char),size,ifp);
@@ -152,22 +153,22 @@ void main(int argc, char **argv)
     }
 
     /* create code */
-	if(cfp == NULL)
+    if(cfp == NULL)
     {
         /* set values to zero */
         for(i = 0; i < num; i++)
         {
 
-        	//values[i] = 1; defaultnya gini aneh. #karsten
+            //values[i] = 1; defaultnya gini aneh. #karsten
             values[i] = 0;
         }
 
-        //	fprintf(stderr,"Before values\n");
+        //  fprintf(stderr,"Before values\n");
 
         /* find values */
         value(values,file,size,num);
 
-        //	fprintf(stderr,"After value\n");
+        //  fprintf(stderr,"After value\n");
 
         /* find probs */
         p = size + 0.0;
@@ -187,43 +188,46 @@ void main(int argc, char **argv)
         // loc adalah array yang berisi huruf yang disort descending berdasarkan array prob
         sort(prob,loc,num);
 
-        //	fprintf(stderr,"After sort   \n");
+        //  fprintf(stderr,"After sort   \n");
 
         /* make huff code */
         huff(prob,loc,num, code, length);
 
-        //	fprintf(stderr,"After huff   \n");
-	}
+        //  fprintf(stderr,"After huff   \n");
+    }
 
-    //	fprintf(stderr,"After cfp==NULL\n");
+    //  fprintf(stderr,"After cfp==NULL\n");
 
     /* encode file */
-	size=files(size,code,length,file);
+    unsigned int bitSize[1];
+    bitSize[0] = files(size,code,length,file);
+    size = bitSize[0]/8 + 1;
 
-    //	fprintf(stderr,"After size   \n");
+    //  fprintf(stderr,"After size   \n");
 
     /* write length of encoded file to the decoder */
-    /*	if(x==0)
+    /*  if(x==0)
         fwrite(&size,sizeof(int),1,ofp);
     */
 
-	if(sfp == NULL)
-	{
+    if(sfp == NULL)
+    {
         /* write encoded file to file */
-	    fwrite(code,sizeof(unsigned int),num,ofp);
-		fwrite(length,sizeof(char),num,ofp);
-	}
+        fwrite(bitSize, sizeof(unsigned int), 1, ofp);
+        fwrite(code,sizeof(unsigned int),num,ofp);
+        fwrite(length,sizeof(char),num,ofp);
+    }
 
     fwrite(file,sizeof(unsigned char),size,ofp);
     fclose(ofp);
 
     /* write code to a file */
-	if(sfp != NULL)
+    if(sfp != NULL)
     {
-		fwrite(code,sizeof(unsigned int),num,sfp);
-		fwrite(length,sizeof(char),num,sfp);
-		fclose(sfp);
-	}
+        fwrite(code,sizeof(unsigned int),num,sfp);
+        fwrite(length,sizeof(char),num,sfp);
+        fclose(sfp);
+    }
 
 }
 
