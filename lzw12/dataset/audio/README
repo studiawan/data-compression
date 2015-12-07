@@ -1,0 +1,41 @@
+
+
+
+This directory contains audio datasets  to be used for experimentation.
+The datasets have been obtained using a 16 bit linear A/D at a sampling rate
+of 44,100 samples per second.  The dataset is in "raw" form with no headers. 
+Depending on your machine, you might have to change the byte ordering.
+
+
+The file gabe.raw contains an excerpt from "Erfrue dich, Erde!" by Dietrich 
+Buxtehude (c. 1637-1707) taken from The Buxtehude Project CD (PGM-102).  
+Copyright by PGM Recordings, New York City, USA.  All rights reserved.  
+Used with permission.  It was provided by Mr. Gabe Wiener of Quintessential 
+Sounds Inc., New York, New York.
+
+The file berk.raw is an excerpt from material provided by Mr. Clete Barker,
+Soundrecorders Inc., Omaha, Nebraska.
+
+
+
+DISCLAIMER:
+
+All programs and supporting material are presented "as is" without warranty
+of any kind, either expressed or implied, including but not limited to
+implied warranties of merchantability and fitness for a particular purpose.
+Neither Morgan Kaufmann Publishers, the authors, nor anyone else who has been
+involved in the creation, production, or delivery of this software shall be
+liable for any direct, incidental, or consequential damages resulting from
+use of the software or documentation, regardless of the theory of liability.
+
+The entire risk as to quality, performance or results due to use of the
+software is assumed by the user and the software is provided without support
+or obligation of any kind to assist in its use, modification, or enhancement.
+Should the software prove defective, the user (and not Morgan Kauffman
+Publishers or others involved in the creation of this software) shall assume
+the entire cost of all necessary servicing, repair or correction to the
+software and any other software or equipment used in connection with it.
+Morgan Kaufmann Publishers, Inc. does not accept any liability with respect
+to infringement of copyrights, trade secrets, or patents by this software
+or documentation.
+
