@@ -1,0 +1,2 @@
+cara compile
+./compile.sh [silence.c/compand.c] [nama_output]
