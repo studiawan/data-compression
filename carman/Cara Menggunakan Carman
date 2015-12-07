@@ -1,0 +1,92 @@
+	Tata Cara Penggunaan CARMAN
+
+
+
+
+1. Compile program carman.c :
+
+	
+	gcc -o carman carman.c
+
+
+
+2. Jalankan programnya :
+
+
+
+2.1 menampilkan menu help :
+
+	
+	./carman
+
+
+
+2.2 compress data :
+
+	
+	./carman a [nama CAR archive] [nama file yang akan dikompresi]
+
+
+contoh 1
+	
+	./carman a compress alice.txt
+	
+	./carman a compress cp.html
+
+contoh 2
+	
+	./carman a compress alice.txt cp.html
+
+
+
+2.3 extract data :
+
+	
+	./carman x [nama CAR archive] [nama file yang akan didekompresi  dalam file CAR archive]
+
+contoh 1
+	
+	./carman x compress.car alice.txt
+
+
+
+2.4 delete data
+
+	
+	./carman d [nama CAR archive] [nama file yang akan dihapus  dalam file CAR archive]
+
+
+contoh 1
+	
+	./carman d compress.car alice.txt
+
+
+2.5 menampilkan file dalam CAR archive
+
+	
+	./carman l [nama CAR archive]
+
+
+contoh 1
+	
+	./carman d compress.car
+
+
+2.6 test file dalam CAR archive
+
+	
+	./carman t [nama CAR archive]
+
+
+contoh 1
+	
+	./carman t compress.car
+
+
+
+
+Agar program Archive Carman ini bisa digunakan dimana saja tanpa harus menjalankan ./carman maka file binary carman bisa diletakkan di /usr/local/bin
+
+
+
+Setelah itu untuk menjalankanya tinggal mengetik carman di terminal
