@@ -1,10 +1,10 @@
 Command untuk mengcompile file main-c dan main-e:
 
 FILE main-c
-gcc -o main-c ahuff.c main-c.c errhand.c bitio.c
+gcc -o main-c ahuff.c ../lib/main-c.c ../lib/errhand.c ../lib/bitio.c
 
 FILE main-e
-gcc -o main-e ahuff.o main-e.c errhand.c bitio.c
+gcc -o main-e ahuff.c ../lib/main-e.c ../lib/errhand.c ../lib/bitio.c
 
 Cara menggunakan .exe file:
 
