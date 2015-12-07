@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "bitio.h"
-#include "errhand.h"
+#include "../lib/bitio.h"
+#include "../lib/errhand.h"
 
 char *CompressionName = "Adaptive Huffman coding, with escape codes";
 char *Usage           = "infile outfile [ -d ]";
