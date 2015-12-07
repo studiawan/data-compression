@@ -34,11 +34,13 @@ void main(int argc, char **argv)
     char inimage[50], resimage[50];
     unsigned char **image_in, **res_image;
     int c;
+    long sz;
     FILE *ifp, *ofp;
   extern int  optind;
   extern char *optarg;
 
   ofp = stdout;
+  usage();
   strcpy(resimage,"standard out");
 
   mode = -1;
@@ -91,6 +93,8 @@ void main(int argc, char **argv)
     image_size(inimage, &row_size, &col_size);
 
     fprintf(stderr,"\n Image size: %d X %d\n",col_size,row_size);
+    
+    //printf("%f\n", sz);
 
 /* Assign space for the input and residual images */
 
@@ -111,7 +115,8 @@ void main(int argc, char **argv)
 
 /* Read the image to be decorrelated */
 
-    readimage(inimage, image_in, row_size, col_size);
+    sz = readimage(inimage, image_in, row_size, col_size);
+    //printf("%ld\n", sz);
 
 /* Generate prediction using the prediction mode selected */
 
@@ -217,14 +222,17 @@ void main(int argc, char **argv)
     fwrite(&mode,1,sizeof(int),ofp);
     fwrite(&col_size,1,sizeof(int),ofp);
     fwrite(&row_size,1,sizeof(int),ofp);
+    
 
 /* Store residual image  */
 
     for(row=0; row<row_size; row++)
      for(col=0; col<col_size; col++)
        putc(res_image[row][col],ofp);
-
-
+	fseek(ofp,0L,SEEK_END);
+    long length=ftell(ofp);
+    float zz = (float)length/(float)sz;
+    printf("Compression rate: %f%%\n",zz*100);
    }
 
 void usage(void)
