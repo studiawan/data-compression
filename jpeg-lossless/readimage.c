@@ -28,9 +28,10 @@
 *furnishing, performance, or use of this software.  This software is not       * 
 *authorized for use in life support devices or systems.                        * 
 ********************************************************************************/  
-void readimage(char filename[], unsigned char **image, int row_size, int col_size)  
+long readimage(char filename[], unsigned char **image, int row_size, int col_size)  
 {
 	int r, c;  
+	long length;
      FILE *infile;  
   
      infile = fopen(filename,"rb");  
@@ -39,9 +40,14 @@ void readimage(char filename[], unsigned char **image, int row_size, int col_siz
 			fprintf(stderr, "Unable to open file %s", filename);  
 	     	exit(1);  
 	    }  
+	    else{
+	    	fseek(infile,0L,SEEK_END);
+      		length=ftell(infile);
+	    }
   
      for(r=0; r<row_size; r++)  
      	fread(image[r],col_size,sizeof(char),infile);  
            
      fclose(infile);  
+     return length;
 }  

@@ -51,7 +51,8 @@ Return values:
 */  
   
    struct stat status;  
-   int res;  
+   int res;
+   float sz;  
    long img_len;  
   
    res = stat (file, &status);  
@@ -65,51 +66,61 @@ Return values:
    {  
       *r = 128;  
       *c = 128;  
+      sz = 16.384;
    }  
    else if (img_len == 64000L)  /* IBM VGA Screen */  
    {  
       *r = 200;  
       *c = 320;  
+      sz = 64.000;
    }  
    else if (img_len == 65536L)  /* Standard */  
    {  
       *r = 256;  
       *c = 256;  
+      sz = 65.536;
    }  
    else if (img_len == 98304L)  /* Low-Res IVG images */  
    {  
       *r = 256;  
       *c = 384;  
+      sz = 98.304;
    }  
    else if (img_len == 196608L) /* Hi-Res IVG images */  
    {  
       *r = 512;  
       *c = 384;  
+      sz = 196.608;
    }  
    else if (img_len == 262144L) /* Standard, but large... */  
    {  
       *r = 512;  
       *c = 512;  
+      sz = 262.144;
    }  
    else if (img_len == 307200L) /* SVGA Hi-Res from GIFs */  
    {  
       *r = 480;  
       *c = 640;  
+      sz = 307.200;
    }  
    else if (img_len == 345600L) /* mpeg frame 720 x 480 */  
    {  
       *r = 720;  
       *c = 480;  
+      sz = 345.600;
    }  
    else if (img_len == 414720L) /* jpeg test image 576 x 720 */  
    {  
       *r = 576;  
       *c = 720;  
+      sz = 414.720;
    }  
    else                         /* oops */  
    {  
       fprintf(stderr, "\nError, unknown image size: %ld\n", img_len);  
       return (-2);  
    }  
-   return (0);  
+   //fprintf(stderr, "\nError, unknown image size: %ld\n", img_len);  
+   return sz;  
 } 
