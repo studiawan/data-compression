@@ -52,21 +52,6 @@ unsigned int decode_string();
 char *CompressionName = "LZW 15 Bit Variable Rate Encoder";
 char *Usage           = "in-file out-file\n\n";
 
-/*
- * This data structure defines the dictionary.  Each entry in the dictionary
- * has a code value.  This is the code emitted by the compressor.  Each
- * code is actually made up of two pieces:  a parent_code, and a
- * character.  Code values of less than 256 are actually plain
- * text codes.
- *
- * Note that in order to handle 16 bit segmented compilers, such as most
- * of the MS-DOS compilers, it was necessary to break up the dictionary
- * into a table of smaller dictionary pointers.  Every reference to the
- * dictionary was replaced by a macro that did a pointer dereference first.
- * By breaking up the index along byte boundaries we should be as efficient
- * as possible.
- */
-
 struct dictionary {
     int code_value;
     int parent_code;
