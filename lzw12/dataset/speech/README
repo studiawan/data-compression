@@ -1,0 +1,39 @@
+
+This directory contains speech datasets related in some way
+to "Introduction to Data Compression" by K. Sayood, published by 
+Morgan-Kaufmann Publishers.  
+
+The speech datasets have been obtained by digitizing speech using a 16 bit 
+linear A/D.  The speech data was sampled at 8000 samples per second.  The
+dataset is in "raw" form with no headers. Depending on your machine, you
+might have to change the byte ordering.
+
+File                    Description
+
+emergency.raw		Female voice reading emergency message.
+mary.raw		Female voice reciting.
+testf.raw		Female voice saying "test"
+testm.raw		Male voice saying "test"
+
+
+DISCLAIMER:
+
+All programs and supporting material are presented "as is" without warranty
+of any kind, either expressed or implied, including but not limited to
+implied warranties of merchantability and fitness for a particular purpose.
+Neither Morgan Kaufmann Publishers, the authors, nor anyone else who has been
+involved in the creation, production, or delivery of this software shall be
+liable for any direct, incidental, or consequential damages resulting from
+use of the software or documentation, regardless of the theory of liability.
+
+The entire risk as to quality, performance or results due to use of the
+software is assumed by the user and the software is provided without support
+or obligation of any kind to assist in its use, modification, or enhancement.
+Should the software prove defective, the user (and not Morgan Kauffman
+Publishers or others involved in the creation of this software) shall assume
+the entire cost of all necessary servicing, repair or correction to the
+software and any other software or equipment used in connection with it.
+Morgan Kaufmann Publishers, Inc. does not accept any liability with respect
+to infringement of copyrights, trade secrets, or patents by this software
+or documentation.
+

@@ -1,0 +1,50 @@
+
+This directory contains grey-scale images used as examples in "Introduction 
+to Data Compression" by K. Sayood, published by Morgan-Kaufmann Publishers.  
+They are 8 bits per pixel grey level images stored in raster
+scan order.  If you have a viewer that does not permit viewing of raw images,
+you can use the convpgm program to convert the images to pgm format.  If
+you are working on a PC with a VGA display you can use the "showimg" program
+to display these images.  Various other programs for use with images can also 
+be found in the programs subdirectory.
+
+Image          Size          Description
+
+sena.img       256X256   Boy
+sinan.img      256X256   Boy
+elif.img       256X256   Girl
+earth.img      256X256   earth 
+omaha.img      256X256   aerial view of a portion of Omaha, Nebraska (courtesy
+                         Center for Advanced Land Management  - University of
+                         Nebraska - Lincoln)
+sensin.img     256X256   Two boys
+ccir_frame.y   720X486   The Y component of a CCIR 601 frame.
+ccir_field.y   720X486   The two fields of the Y component of a CCIR 601 frame.
+bookshelf1.img 256X256   bookshelf
+bookshelf1.img 256X256   closer view of a bookshelf
+
+DISCLAIMER:
+
+All programs and supporting material are presented "as is" without warranty
+of any kind, either expressed or implied, including but not limited to
+implied warranties of merchantability and fitness for a particular purpose.
+Neither Morgan Kaufmann Publishers, the authors, nor anyone else who has been
+involved in the creation, production, or delivery of this software shall be
+liable for any direct, incidental, or consequential damages resulting from
+use of the software or documentation, regardless of the theory of liability.
+
+The entire risk as to quality, performance or results due to use of the
+software is assumed by the user and the software is provided without support
+or obligation of any kind to assist in its use, modification, or enhancement.
+Should the software prove defective, the user (and not Morgan Kauffman
+Publishers or others involved in the creation of this software) shall assume
+the entire cost of all necessary servicing, repair or correction to the
+software and any other software or equipment used in connection with it.
+Morgan Kaufmann Publishers, Inc. does not accept any liability with respect
+to infringement of copyrights, trade secrets, or patents by this software
+or documentation.
+
+
+
+
+
