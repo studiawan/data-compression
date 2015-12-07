@@ -24,14 +24,14 @@
 
 #define SYMBOL 256
 
-int read_from_file_instantly(FILE *file, unsigned char *symbol)
+int read_from_file_instantly(FILE **file, unsigned char *symbol)
 {
-	char temp;
-	char a = fgetc(file);
-	if(a==temp)
+	char temp[1];
+	if(fread(temp, 1, 1, *file)>0)
 	{
-		symbol[0]=temp;
-		
+		symbol[0]=(unsigned char)temp[0];
+		//printf("%d ", temp[0]);
+			
 		return 1;
 	}
 	else
@@ -41,7 +41,7 @@ int read_from_file_instantly(FILE *file, unsigned char *symbol)
 	
 }
 
-double mean_squared_error(FILE *file, FILE *file2, int size)
+double mean_squared_error(FILE **file, FILE **file2, int size)
 {
 	unsigned char symbol[1];
 	unsigned char symbol2[1];
@@ -56,9 +56,13 @@ double mean_squared_error(FILE *file, FILE *file2, int size)
 	{
 		read_from_file_instantly(&*file, symbol);
 		read_from_file_instantly(&*file2, symbol2);
+		//printf("%d %d\n", symbol[0], symbol2[0]);
 		
 		current += ( (int)symbol[0] - (int)symbol2[0]) * ( (int)symbol[0] - (int)symbol2[0]);
+		
 	}
+	//printf("%d %d\n", current, size);
+	// = 256*256;
 	return 1.0/size*current;
 }
 
@@ -82,15 +86,15 @@ int main( int argc, char* argv[] ) {
 		
 	} else {
 		FILE *in;
-		fopen(in, "rb");
+		in = fopen(argv[1], "rb");
 		
 		FILE *in2;
-		in2 = fopen(in2, "rb");
+		in2 = fopen(argv[2], "rb");
 		
 		char temp[128];
 		
-		int width, height;
-		int i = 0;
+		int width = 256, height = 256;
+		//int i = 0;
 		/*
 		do {
 			in.getline( temp, 128 );
@@ -122,14 +126,15 @@ int main( int argc, char* argv[] ) {
 		} while( i < 3 );
 		*/
 		int size = width * height;
+		printf("%d\n", size);
 		
 		double mse = mean_squared_error( &in, &in2, size );
 		
-		printf("MSE := ", mse);
+		printf("MSE := %lf\n", mse);
 		
 		double psnr = peak_signal_to_noise_ratio( mse );
 		
-		printf("PSNR := ", psnr);
+		printf("PSNR := %lf", psnr);
 	}
 	
 	return 0;
